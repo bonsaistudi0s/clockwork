@@ -48,7 +48,8 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 dependencies {
     compileOnly project(":common")
 
-    implementation("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+    modImplementation("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+    modImplementation "dev.xylonity.knightlib:knightlib-forge-${minecraft_version}:${knightlib_version}"
 
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }

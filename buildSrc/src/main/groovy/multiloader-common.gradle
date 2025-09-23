@@ -49,6 +49,10 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
+    maven {
+        name = "Xylonity's vault"
+        url = "https://raw.githubusercontent.com/Xylonity/maven-centralish/main/maven/"
+    }
 }
 
 // Declare capabilities on the outgoing configurations.
@@ -106,7 +110,8 @@ processResources {
             "forge_loader_version_range": forge_loader_version_range,
             'credits'                      : credits,
             'java_version'                 : java_version,
-            'geckolib_version'             : geckolib_version
+            'geckolib_version'             : geckolib_version,
+            'knightlib_version'            : knightlib_version
     ]
 
     var jsonExpandProps = expandProps.collectEntries {
