@@ -1,6 +1,8 @@
 package dev.xylonity.bonsai.clockwork;
 
 import dev.xylonity.bonsai.clockwork.platform.ClockworkPlatform;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,8 @@ public class Clockwork {
     public static final ClockworkPlatform PLATFORM = ServiceLoader.load(ClockworkPlatform.class).findFirst().orElseThrow();
 
     public static void init() {
-        ;;
+        ClockworkItems.ITEMS.init();
+        ClockworkEntities.ENTITIES.init();
     }
 
 }

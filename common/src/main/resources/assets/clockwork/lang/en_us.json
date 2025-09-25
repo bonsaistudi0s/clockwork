@@ -1,0 +1,10 @@
+{
+  "packet.clockwork.client_message.is_flying": "%1$s is now flying",
+  "packet.clockwork.client_message.is_walking": "%1$s is now walking",
+
+  "item.clockwork.clockwork_wings": "Clockwork Wings",
+
+  "key.clockwork.toggle_dragonfly_flight": "Toggle Dragonfly Flight Mode",
+  "key.categories.clockwork": "Clockwork"
+
+}
