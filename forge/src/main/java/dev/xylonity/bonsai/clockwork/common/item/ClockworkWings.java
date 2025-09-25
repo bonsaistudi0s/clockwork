@@ -167,60 +167,34 @@ public class ClockworkWings extends GenericGeckoArmorItem {
             return PlayState.STOP;
         }
 
-        UUID playerId = player.getUUID();
-        Level level = player.level();
-
         // Using client-sided cache for animations to avoid NBT sync issues (that for some reason happen in survival and not in creative mode)
-        if (level.isClientSide) {
-            AnimationStateData stateData = getOrCreateAnimationState(playerId);
-            long currentTick = level.getGameTime();
+        AnimationStateData stateData = getOrCreateAnimationState(player.getUUID());
+        long currentTick = player.level().getGameTime();
 
-            // Only updates state every few ticks to prevent fast changes that could break anims
-            if (currentTick - stateData.lastUpdateTick >= 2) {
-                boolean isGlidingNow = player.isFallFlying() && isFlyEnabled(stack);
-                boolean isFallingNow = !isGlidingNow && computeFalling(player);
-                boolean isDivingNow = isGlidingNow && computeDiving(player);
+        boolean onGroundish = !player.isFallFlying() && (player.onGround() || player.isInWater() || player.isInLava());
+        if (onGroundish) {
+            stateData.fallAcc = 0;
+            stateData.diveAcc = 0;
+        }
 
-                // hysteresis
-                if (isFallingNow) {
-                    stateData.fallAcc = Math.min(stateData.fallAcc + 1, FALL_ACCELERATION_MAX);
-                }
-                else {
-                    stateData.fallAcc = Math.max(stateData.fallAcc - 1, 0);
-                }
+        // Only updates state every few ticks to prevent fast changes that could break anims
+        if (onGroundish || (currentTick - stateData.lastUpdateTick >= 2)) {
+            boolean isGlidingNow = player.isFallFlying() && isFlyEnabled(stack);
+            boolean isFallingNow = !isGlidingNow && computeFalling(player);
+            boolean isDivingNow = isGlidingNow && computeDiving(player);
 
-                if (isDivingNow) {
-                    stateData.diveAcc = Math.min(stateData.diveAcc + 1, DIVE_ACCELERATION_MAX);
-                }
-                else {
-                    stateData.diveAcc = Math.max(stateData.diveAcc - 1, 0);
-                }
+            // hysteresis
+            stateData.fallAcc = isFallingNow ? Math.min(stateData.fallAcc + 1, FALL_ACCELERATION_MAX) : Math.max(stateData.fallAcc - 1, 0);
+            stateData.diveAcc = isDivingNow ? Math.min(stateData.diveAcc + 1, DIVE_ACCELERATION_MAX) : Math.max(stateData.diveAcc - 1, 0);
 
-                // Apply thresholds
-                isFallingNow = stateData.fallAcc >= 2;
-                isDivingNow = stateData.diveAcc >= 8;
+            // Applying thresholds
+            isFallingNow = stateData.fallAcc >= 2;
+            isDivingNow  = stateData.diveAcc >= 8;
 
-                stateData.lastUpdateTick = currentTick;
+            stateData.lastUpdateTick = currentTick;
 
-                // First frame after equip or render init
-                if (!stateData.isInit) {
-                    if (isGlidingNow) {
-                        event.setAndContinue(isDivingNow ? DIVE : GLIDE);
-                    }
-                    else if (isFallingNow) {
-                        event.setAndContinue(FALL);
-                    }
-                    else {
-                        event.setAndContinue(CLOSED);
-                    }
-
-                    stateData.isInit = true;
-                    stateData.isGliding = isGlidingNow;
-
-                    return PlayState.CONTINUE;
-                }
-
-                // After init updates
+            // First frame after equip or render init
+            if (!stateData.isInit) {
                 if (isGlidingNow) {
                     event.setAndContinue(isDivingNow ? DIVE : GLIDE);
                 }
@@ -230,6 +204,22 @@ public class ClockworkWings extends GenericGeckoArmorItem {
                 else {
                     event.setAndContinue(CLOSED);
                 }
+
+                stateData.isInit = true;
+                stateData.isGliding = isGlidingNow;
+
+                return PlayState.CONTINUE;
+            }
+
+            // After init updates
+            if (isGlidingNow) {
+                event.setAndContinue(isDivingNow ? DIVE : GLIDE);
+            }
+            else if (isFallingNow) {
+                event.setAndContinue(FALL);
+            }
+            else {
+                event.setAndContinue(CLOSED);
             }
         }
 
@@ -255,51 +245,46 @@ public class ClockworkWings extends GenericGeckoArmorItem {
             return PlayState.STOP;
         }
 
-        UUID uuid = player.getUUID();
-        Level level = player.level();
+        AnimationStateData stateData = getOrCreateAnimationState(player.getUUID());
 
-        if (level.isClientSide) {
-            AnimationStateData stateData = getOrCreateAnimationState(uuid);
+        // Skip transitions until the state has initialized
+        if (!stateData.isInit) {
+            return PlayState.STOP;
+        }
 
-            // Skip transitions until the state has initialized
-            if (!stateData.isInit) {
-                return PlayState.STOP;
-            }
+        boolean isGlidingNow = player.isFallFlying() && isFlyEnabled(stack);
 
-            boolean isGlidingNow = player.isFallFlying() && isFlyEnabled(stack);
+        // Checks if a flap pulse is pending
+        if (stateData.flapPulse) {
+            stateData.flapPulse = false;
 
-            // Checks if a flap pulse is pending
-            if (stateData.flapPulse) {
-                stateData.flapPulse = false;
-
-                // If gliding, plays the flap
-                if (isGlidingNow) {
-                    event.getController().forceAnimationReset();
-                    event.setAndContinue(FLAP);
-
-                    return PlayState.CONTINUE;
-                }
-            }
-
-            // If gliding started
-            if (isGlidingNow && !stateData.isGliding) {
-                stateData.isGliding = true;
-
+            // If gliding, plays the flap
+            if (isGlidingNow) {
                 event.getController().forceAnimationReset();
-                event.setAndContinue(OPEN);
+                event.setAndContinue(FLAP);
 
                 return PlayState.CONTINUE;
             }
+        }
 
-            // If gliding stopped
-            if (!isGlidingNow && stateData.isGliding) {
-                stateData.isGliding = false;
+        // If gliding started
+        if (isGlidingNow && !stateData.isGliding) {
+            stateData.isGliding = true;
 
-                event.getController().forceAnimationReset();
-                event.setAndContinue(CLOSE);
+            event.getController().forceAnimationReset();
+            event.setAndContinue(OPEN);
 
-                return PlayState.CONTINUE;
-            }
+            return PlayState.CONTINUE;
+        }
+
+        // If gliding stopped
+        if (!isGlidingNow && stateData.isGliding) {
+            stateData.isGliding = false;
+
+            event.getController().forceAnimationReset();
+            event.setAndContinue(CLOSE);
+
+            return PlayState.CONTINUE;
         }
 
         // If a transition is still playing, continues it until it finished
@@ -359,7 +344,7 @@ public class ClockworkWings extends GenericGeckoArmorItem {
 
         int ticksLeft = getBoostRemainingTicks(stack, level);
         if (ticksLeft > 0) {
-            int secsLeft = (int)Math.ceil(ticksLeft / 20.0);
+            int secsLeft = (int) Math.ceil(ticksLeft / 20.0);
             player.displayClientMessage(Component.literal("Boost ready in " + secsLeft + "s"), true);
             return;
         }
