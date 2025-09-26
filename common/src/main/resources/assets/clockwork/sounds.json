@@ -1,0 +1,86 @@
+{
+  "clockwork_wings_close": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_wings_close_1"
+      },
+      {
+        "name": "clockwork:clockwork_wings_close_2"
+      },
+      {
+        "name": "clockwork:clockwork_wings_close_3"
+      },
+      {
+        "name": "clockwork:clockwork_wings_close_4"
+      }
+    ]
+  },
+  "clockwork_wings_flap": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_wings_flap_1"
+      },
+      {
+        "name": "clockwork:clockwork_wings_flap_2"
+      },
+      {
+        "name": "clockwork:clockwork_wings_flap_3"
+      },
+      {
+        "name": "clockwork:clockwork_wings_flap_4"
+      },
+      {
+        "name": "clockwork:clockwork_wings_flap_5"
+      }
+    ]
+  },
+  "clockwork_wings_open": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_wings_open_1"
+      },
+      {
+        "name": "clockwork:clockwork_wings_open_2"
+      },
+      {
+        "name": "clockwork:clockwork_wings_open_3"
+      },
+      {
+        "name": "clockwork:clockwork_wings_open_4"
+      }
+    ]
+  },
+  "dragonfly_fly_loop": {
+    "sounds": [
+      {
+        "name": "clockwork:dragonfly_fly_loop"
+      }
+    ]
+  },
+  "dragonfly_hurt": {
+    "sounds": [
+      {
+        "name": "clockwork:dragonfly_hurt_1"
+      },
+      {
+        "name": "clockwork:dragonfly_hurt_2"
+      },
+      {
+        "name": "clockwork:dragonfly_hurt_3"
+      },
+      {
+        "name": "clockwork:dragonfly_hurt_4"
+      },
+      {
+        "name": "clockwork:dragonfly_hurt_5"
+      }
+    ]
+  },
+  "dragonfly_idle_loop": {
+    "sounds": [
+      {
+        "name": "clockwork:dragonfly_idle_loop"
+      }
+    ]
+  }
+}

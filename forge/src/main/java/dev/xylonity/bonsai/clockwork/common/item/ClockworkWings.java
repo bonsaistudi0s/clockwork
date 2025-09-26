@@ -5,7 +5,9 @@ import com.google.common.collect.Multimap;
 import dev.xylonity.bonsai.clockwork.common.entity.projectile.ClockworkWingsBoostProjectile;
 import dev.xylonity.bonsai.clockwork.common.item.generic.GenericGeckoArmorItem;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
+import dev.xylonity.bonsai.clockwork.network.packets.GenericSoundC2SPacket;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
+import dev.xylonity.knightlib.api.network.Network;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -41,6 +43,7 @@ public class ClockworkWings extends GenericGeckoArmorItem {
     private static final String NBT_DIVE_ACC = "clockwork_wings_dive_acc";
     private static final String NBT_BOOST_UNTIL = "clockwork_wings_boost_until";
     private static final String NBT_FLAP_PULSE = "clockwork_wings_flap_pulse";
+    private static final String NBT_FLAP_TICK = "clockwork_wings_flap_tick";
 
     private static final int FALL_ACCELERATION_MAX = 8;
     private static final int DIVE_ACCELERATION_MAX = 12;
@@ -57,6 +60,10 @@ public class ClockworkWings extends GenericGeckoArmorItem {
         int diveAcc = 0;
         boolean flapPulse = false;
         long lastUpdateTick = 0;
+
+        boolean lastIsGliding = false;
+        long lastSoundTick = 0;
+        long lastFlapTick = -1;
     }
 
     private static final RawAnimation CLOSED = RawAnimation.begin().thenLoop("closed");
@@ -121,10 +128,65 @@ public class ClockworkWings extends GenericGeckoArmorItem {
 
         if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() == this) {
             // Handles boost detection
-            if (level.isClientSide) {
-                if (!level.getEntitiesOfClass(ClockworkWingsBoostProjectile.class, player.getBoundingBox().inflate(1.6), e -> e.isAlive() && e.tickCount <= 1).isEmpty()) {
+            if (!level.getEntitiesOfClass(ClockworkWingsBoostProjectile.class, player.getBoundingBox().inflate(1.6), e -> e.isAlive() && e.tickCount <= 1).isEmpty()) {
+
+                if (!level.isClientSide) {
+                    CompoundTag tag = stack.getOrCreateTag();
+                    tag.putLong(NBT_FLAP_TICK, level.getGameTime());
+                }
+
+                if (level.isClientSide) {
                     AnimationStateData stateData = getOrCreateAnimationState(player.getUUID());
                     stateData.flapPulse = true;
+                }
+            }
+
+            if (level.isClientSide) {
+                AnimationStateData stateData = getOrCreateAnimationState(player.getUUID());
+                long now = level.getGameTime();
+
+                CompoundTag tag = stack.getTag();
+                if (tag != null && tag.contains(NBT_FLAP_TICK)) {
+                    long nbtFlapTick = tag.getLong(NBT_FLAP_TICK);
+                    if (nbtFlapTick != stateData.lastFlapTick && nbtFlapTick > 0) {
+                        stateData.lastFlapTick = nbtFlapTick;
+                        stateData.flapPulse = true;
+                    }
+
+                }
+
+                boolean isGlidingNow = player.isFallFlying() && isFlyEnabled(stack);
+
+                if (isGlidingNow && !stateData.lastIsGliding) {
+                    if (now - stateData.lastSoundTick >= 2) {
+                        Network.sendToServer(new GenericSoundC2SPacket(1)); // OPEN
+                        stateData.lastSoundTick = now;
+                    }
+
+                    stateData.lastIsGliding = true;
+                }
+
+                if (!isGlidingNow && stateData.lastIsGliding) {
+                    if (now - stateData.lastSoundTick >= 2) {
+                        Network.sendToServer(new GenericSoundC2SPacket(0)); // CLOSE
+                        stateData.lastSoundTick = now;
+                    }
+
+                    stateData.lastIsGliding = false;
+                }
+
+                if (stateData.flapPulse && isGlidingNow) {
+                    stateData.flapPulse = false;
+                    if (now - stateData.lastSoundTick >= 2) {
+                        Network.sendToServer(new GenericSoundC2SPacket(2)); // FLAP
+                        stateData.lastSoundTick = now;
+                    }
+
+                }
+
+                if (!player.isFallFlying() && (player.onGround() || player.isInWater() || player.isInLava())) {
+                    stateData.fallAcc = 0;
+                    stateData.diveAcc = 0;
                 }
             }
         }
@@ -136,6 +198,7 @@ public class ClockworkWings extends GenericGeckoArmorItem {
 
             resetFlags(stack);
         }
+
     }
 
     private static AnimationStateData getOrCreateAnimationState(UUID playerId) {
@@ -175,6 +238,19 @@ public class ClockworkWings extends GenericGeckoArmorItem {
         if (onGroundish) {
             stateData.fallAcc = 0;
             stateData.diveAcc = 0;
+        }
+
+        // Flap sync
+        if (player.level().isClientSide) {
+            CompoundTag tag = stack.getTag();
+            if (tag != null && tag.contains(NBT_FLAP_TICK)) {
+                long nbtFlapTick = tag.getLong(NBT_FLAP_TICK);
+                if (nbtFlapTick != stateData.lastFlapTick && nbtFlapTick > 0) {
+                    stateData.lastFlapTick = nbtFlapTick;
+                    stateData.flapPulse = true;
+                }
+            }
+
         }
 
         // Only updates state every few ticks to prevent fast changes that could break anims
@@ -254,6 +330,18 @@ public class ClockworkWings extends GenericGeckoArmorItem {
 
         boolean isGlidingNow = player.isFallFlying() && isFlyEnabled(stack);
 
+        // Flap sync
+        if (player.level().isClientSide) {
+            CompoundTag tag = stack.getTag();
+            if (tag != null && tag.contains(NBT_FLAP_TICK)) {
+                long nbtFlapTick = tag.getLong(NBT_FLAP_TICK);
+                if (nbtFlapTick != stateData.lastFlapTick && nbtFlapTick > 0) {
+                    stateData.lastFlapTick = nbtFlapTick;
+                    stateData.flapPulse = true;
+                }
+            }
+        }
+
         // Checks if a flap pulse is pending
         if (stateData.flapPulse) {
             stateData.flapPulse = false;
@@ -320,6 +408,7 @@ public class ClockworkWings extends GenericGeckoArmorItem {
         tag.putInt(NBT_FALL_ACC, 0);
         tag.putInt(NBT_DIVE_ACC, 0);
         tag.putBoolean(NBT_FLAP_PULSE, false);
+        tag.remove(NBT_FLAP_TICK);
     }
 
     public static void spawnBoostEntity(Level level, Player player) {
@@ -360,7 +449,6 @@ public class ClockworkWings extends GenericGeckoArmorItem {
 
         CompoundTag tag = stack.getOrCreateTag();
         tag.putLong(NBT_BOOST_UNTIL, level.getGameTime() + BOOST_COOLDOWN_TICKS);
-        tag.putBoolean(NBT_FLAP_PULSE, true);
     }
 
     private static int getBoostRemainingTicks(ItemStack stack, Level level) {
