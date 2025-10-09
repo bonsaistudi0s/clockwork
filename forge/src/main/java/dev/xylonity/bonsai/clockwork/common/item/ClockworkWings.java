@@ -39,8 +39,8 @@ public class ClockworkWings extends GenericGeckoArmorItem {
 
     private static final String NBT_GLIDING = "clockwork_wings_gliding";
     private static final String NBT_INIT = "clockwork_wings_init";
-    private static final String NBT_FALL_ACC = "clockwork_wings_fall_acc";
-    private static final String NBT_DIVE_ACC = "clockwork_wings_dive_acc";
+    private static final String NBT_FALL_ACCELERATION = "clockwork_wings_fall_acceleration";
+    private static final String NBT_DIVE_ACCELERATION = "clockwork_wings_dive_acceleration";
     private static final String NBT_BOOST_UNTIL = "clockwork_wings_boost_until";
     private static final String NBT_FLAP_PULSE = "clockwork_wings_flap_pulse";
     private static final String NBT_FLAP_TICK = "clockwork_wings_flap_tick";
@@ -48,7 +48,7 @@ public class ClockworkWings extends GenericGeckoArmorItem {
     private static final int FALL_ACCELERATION_MAX = 8;
     private static final int DIVE_ACCELERATION_MAX = 12;
 
-    public static final int BOOST_COOLDOWN_TICKS = 100;
+    public static final int BOOST_COOLDOWN_TICKS = ClockworkConfig.CLOCKWORK_WINGS_BOOST_COOLDOWN_TICKS;
 
     // Client sided animation state cache to prevent NBT sync issues
     private static final Map<UUID, AnimationStateData> clientAnimationCache = new HashMap<>();
@@ -405,8 +405,8 @@ public class ClockworkWings extends GenericGeckoArmorItem {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean(NBT_INIT, false);
         tag.putBoolean(NBT_GLIDING, false);
-        tag.putInt(NBT_FALL_ACC, 0);
-        tag.putInt(NBT_DIVE_ACC, 0);
+        tag.putInt(NBT_FALL_ACCELERATION, 0);
+        tag.putInt(NBT_DIVE_ACCELERATION, 0);
         tag.putBoolean(NBT_FLAP_PULSE, false);
         tag.remove(NBT_FLAP_TICK);
     }

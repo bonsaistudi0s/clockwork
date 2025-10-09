@@ -35,24 +35,31 @@ public final class ClockworkConfig {
     public static double CLOCKWORK_WINGS_DEFAULT_SINK = 0.004225;
 
     @ConfigEntry(
+            category = "Clockwork Wings",
+            comment = "Boost cooldown ticks",
+            min = 0, max = 1000
+    )
+    public static int CLOCKWORK_WINGS_BOOST_COOLDOWN_TICKS = 60;
+
+    @ConfigEntry(
             category = "Dragonfly",
             comment = "Default health",
             min = 0.0, max = 1000.0
     )
-    public static double DRAGONFLY_DEFAULT_HEALTH = 60;
+    public static double DRAGONFLY_DEFAULT_HEALTH = 20;
 
     @ConfigEntry(
             category = "Dragonfly",
             comment = "Default flying speed",
             min = 0.0, max = 1000.0
     )
-    public static double DRAGONFLY_DEFAULT_FLYING_SPEED = 0.55f;
+    public static double DRAGONFLY_DEFAULT_FLYING_SPEED = 0.65f;
 
     @ConfigEntry(
             category = "Dragonfly",
             comment = "Default walking speed",
             min = 0.0, max = 1000.0
     )
-    public static double DRAGONFLY_DEFAULT_WALKING_SPEED = 0.25f;
+    public static double DRAGONFLY_DEFAULT_WALKING_SPEED = 0.20f;
 
 }
