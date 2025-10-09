@@ -1,0 +1,53 @@
+{
+  "parent": "minecraft:item/handheld",
+  "loader": "forge:separate_transforms",
+  "base": {
+    "parent": "clockwork:item/barrel_crossbow_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "clockwork:item/barrel_crossbow_2d"
+    },
+    "ground": {
+      "parent": "clockwork:item/barrel_crossbow_2d"
+    },
+    "fixed": {
+      "parent": "clockwork:item/barrel_crossbow_2d"
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "clockwork:item/barrel_crossbow_bridge_pulling_0"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.58
+      },
+      "model": "clockwork:item/barrel_crossbow_bridge_pulling_1"
+    },
+    {
+      "predicate": {
+        "pulling": 1,
+        "pull": 1.0
+      },
+      "model": "clockwork:item/barrel_crossbow_bridge_pulling_2"
+    },
+    {
+      "predicate": {
+        "charged": 1
+      },
+      "model": "clockwork:item/barrel_crossbow_bridge_arrow"
+    },
+    {
+      "predicate": {
+        "charged": 1,
+        "firework": 1
+      },
+      "model": "clockwork:item/barrel_crossbow_bridge_firework"
+    }
+  ]
+}
