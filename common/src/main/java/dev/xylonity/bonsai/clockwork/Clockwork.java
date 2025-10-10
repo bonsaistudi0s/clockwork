@@ -1,6 +1,7 @@
 package dev.xylonity.bonsai.clockwork;
 
 import dev.xylonity.bonsai.clockwork.platform.ClockworkPlatform;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkCreativeTabs;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
@@ -20,6 +21,7 @@ public class Clockwork {
         ClockworkItems.ITEMS.init();
         ClockworkEntities.ENTITIES.init();
         ClockworkSounds.SOUNDS.init();
+        ClockworkCreativeTabs.CREATIVE_MODE_TABS.init();
     }
 
 }
