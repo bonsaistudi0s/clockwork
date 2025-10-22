@@ -82,5 +82,103 @@
         "name": "clockwork:dragonfly_idle_loop"
       }
     ]
+  },
+  "clockwork_barrel_crossbow_loading": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_barrel_crossbow_loading_1"
+      },
+      {
+        "name": "clockwork:clockwork_barrel_crossbow_loading_2"
+      },
+      {
+        "name": "clockwork:clockwork_barrel_crossbow_loading_3"
+      },
+      {
+        "name": "clockwork:clockwork_barrel_crossbow_loading_4"
+      }
+    ]
+  },
+  "clockwork_crossbow_loading": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_crossbow_loading_1"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_loading_2"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_loading_3"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_loading_4"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_loading_5"
+      }
+    ]
+  },
+  "clockwork_crossbow_loading_end": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_crossbow_loading_end_1"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_loading_end_2"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_loading_end_3"
+      }
+    ]
+  },
+  "clockwork_crossbow_shoot": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_crossbow_shoot_1"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_shoot_2"
+      },
+      {
+        "name": "clockwork:clockwork_crossbow_shoot_3"
+      }
+    ]
+  },
+  "sprayer_end": {
+    "sounds": [
+      {
+        "name": "clockwork:sprayer_end"
+      }
+    ]
+  },
+  "sprayer_loop": {
+    "sounds": [
+      {
+        "name": "clockwork:sprayer_loop"
+      }
+    ]
+  },
+  "sprayer_start": {
+    "sounds": [
+      {
+        "name": "clockwork:sprayer_start"
+      }
+    ]
+  },
+  "dragonfly_gear": {
+    "sounds": [
+      {
+        "name": "clockwork:dragonfly_gear_1"
+      },
+      {
+        "name": "clockwork:dragonfly_gear_2"
+      },
+      {
+        "name": "clockwork:dragonfly_gear_3"
+      },
+      {
+        "name": "clockwork:dragonfly_gear_4"
+      }
+    ]
   }
 }

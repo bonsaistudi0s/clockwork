@@ -19,12 +19,15 @@ public class ClockworkItems {
     public static final ResourceEntry<Item> BARREL_CROSSBOW = ITEMS.register("barrel_crossbow", Clockwork.PLATFORM.makeItem(new Item.Properties(), ItemType.BARREL_CROSSBOW));
     public static final ResourceEntry<Item> SCOPE_CROSSBOW = ITEMS.register("scope_crossbow", Clockwork.PLATFORM.makeItem(new Item.Properties(), ItemType.SCOPE_CROSSBOW));
     public static final ResourceEntry<Item> CLOCKWORK_GEAR = ITEMS.register("clockwork_gear", () -> new Item(new Item.Properties()));
+    public static final ResourceEntry<Item> CROSSBOW_BARREL = ITEMS.register("crossbow_barrel", () -> new Item(new Item.Properties()));
     public static final ResourceEntry<Item> CLOCKWORK_ARROW = ITEMS.register("clockwork_arrow", () -> new ClockworkArrow(new Item.Properties()));
+    public static final ResourceEntry<Item> CLOCKWORK_POTION_SPRAYER = ITEMS.register("clockwork_potion_sprayer", Clockwork.PLATFORM.makeItem(new Item.Properties(), ItemType.POTION_SPRAYER));
 
     public enum ItemType {
         CLOCKWORK_WINGS,
         BARREL_CROSSBOW,
-        SCOPE_CROSSBOW
+        SCOPE_CROSSBOW,
+        POTION_SPRAYER
     }
 
 }

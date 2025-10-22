@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IQI",
+    "QGQ",
+    "IQI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:gold_ingot"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "G": {
+      "item": "clockwork:clockwork_gear"
+    }
+  },
+  "result": {
+    "item": "clockwork:crossbow_barrel",
+    "count": 1
+  }
+}

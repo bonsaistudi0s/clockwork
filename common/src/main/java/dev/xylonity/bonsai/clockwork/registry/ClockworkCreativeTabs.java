@@ -21,10 +21,12 @@ public class ClockworkCreativeTabs {
                             .title(Component.translatable("creativetab.clockwork.title"))
                             .displayItems((display, output) -> {
                                 output.accept(ClockworkItems.CLOCKWORK_GEAR.get());
+                                output.accept(ClockworkItems.CROSSBOW_BARREL.get());
                                 output.accept(ClockworkItems.CLOCKWORK_ARROW.get());
                                 output.accept(ClockworkItems.CLOCKWORK_WINGS.get());
                                 output.accept(ClockworkItems.BARREL_CROSSBOW.get());
                                 output.accept(ClockworkItems.SCOPE_CROSSBOW.get());
+                                output.accept(ClockworkItems.CLOCKWORK_POTION_SPRAYER.get());
                             })
                             .build());
 

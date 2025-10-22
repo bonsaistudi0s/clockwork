@@ -622,6 +622,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"1.21": {
+					"effect": "music"
+				}
 			}
 		},
 		"loaded": {
@@ -1203,6 +1208,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"1.04": {
+					"effect": "music"
+				}
 			}
 		},
 		"load_quickcharge_2": {
@@ -1512,6 +1522,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.84": {
+					"effect": "music"
+				}
 			}
 		},
 		"load_quickcharge_3": {
@@ -1802,6 +1817,11 @@
 							"vector": [0, 0.4, 0]
 						}
 					}
+				}
+			},
+			"sound_effects": {
+				"0.64": {
+					"effect": "music"
 				}
 			}
 		},

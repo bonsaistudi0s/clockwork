@@ -26,6 +26,27 @@
 					}
 				}
 			}
+		},
+		"idle_off": {
+			"animation_length": 2.4583,
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"back": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"2.375": {
+							"vector": [0, 0, 710],
+							"easing": "easeOutSine"
+						},
+						"2.4583": {
+							"vector": [0, 0, 720],
+							"easing": "easeOutSine"
+						}
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
