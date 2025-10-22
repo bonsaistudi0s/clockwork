@@ -1,10 +1,8 @@
 package dev.xylonity.bonsai.clockwork;
 
 import dev.xylonity.bonsai.clockwork.platform.ClockworkPlatform;
-import dev.xylonity.bonsai.clockwork.registry.ClockworkCreativeTabs;
-import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
-import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
-import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
+import dev.xylonity.bonsai.clockwork.proxy.IProxy;
+import dev.xylonity.bonsai.clockwork.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +13,8 @@ public class Clockwork {
     public static final String MOD_ID = "clockwork";
     public static final Logger LOGGER = LoggerFactory.getLogger("Clockwork");
 
+    public static IProxy PROXY;
+
     public static final ClockworkPlatform PLATFORM = ServiceLoader.load(ClockworkPlatform.class).findFirst().orElseThrow();
 
     public static void init() {
@@ -22,6 +22,7 @@ public class Clockwork {
         ClockworkEntities.ENTITIES.init();
         ClockworkSounds.SOUNDS.init();
         ClockworkCreativeTabs.CREATIVE_MODE_TABS.init();
+        ClockworkParticles.PARTICLES.init();
     }
 
 }

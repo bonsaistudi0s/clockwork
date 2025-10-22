@@ -1,13 +1,16 @@
-package dev.xylonity.bonsai.clockwork.common.entity.custom;
+package dev.xylonity.bonsai.clockwork.common.entity.passive;
 
 import dev.xylonity.bonsai.clockwork.common.entity.PassiveClockworkEntity;
+import dev.xylonity.bonsai.clockwork.client.sound.Sounds;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.network.packets.DragonflyAscendKeyC2SPacket;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import dev.xylonity.knightlib.api.network.Network;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
@@ -34,8 +38,9 @@ import software.bernie.geckolib.core.object.PlayState;
 public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRideable {
 
     private final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
-    private final RawAnimation FLY  = RawAnimation.begin().thenPlay("fly");
+    private final RawAnimation FLY = RawAnimation.begin().thenPlay("fly");
     private final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
 
     // 0 walk, 1 flying, 2 idle (floor)
     public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DragonflyEntity.class, EntityDataSerializers.INT);
@@ -94,11 +99,24 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
             }
         }
 
+        if (level().isClientSide) {
+            Sounds.proxy().tickSounds(this);
+        }
+
     }
 
     @Override
     public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
         return getState() != 1;
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (level().isClientSide) {
+            Sounds.proxy().stopAllFor(this);
+        }
+
+        super.remove(reason);
     }
 
     @Override
@@ -144,6 +162,13 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
         if (passenger instanceof LivingEntity) {
             passenger.setPos(this.getX(), this.getY() + 0.2, this.getZ());
         }
+
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return ClockworkSounds.DRAGONFLY_HURT.get();
     }
 
     @Override
@@ -227,12 +252,24 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     }
 
     @Override
+    protected void tickDeath() {
+        ++this.deathTime;
+        if (this.deathTime >= 38 && !this.level().isClientSide() && !this.isRemoved()) {
+            this.level().broadcastEntityEvent(this, (byte)60);
+            this.remove(RemovalReason.KILLED);
+        }
+    }
+
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(new AnimationController<>(this, "controller", 2, this::predicate));
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
-        if (getState() == 1) {
+        if (isDeadOrDying()) {
+            event.setAnimation(DEATH);
+        }
+        else if (getState() == 1) {
             event.setAnimation(FLY);
         }
         else if (event.isMoving()) {

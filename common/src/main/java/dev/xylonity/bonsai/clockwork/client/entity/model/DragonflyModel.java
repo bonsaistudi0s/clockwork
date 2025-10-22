@@ -1,7 +1,7 @@
 package dev.xylonity.bonsai.clockwork.client.entity.model;
 
 import dev.xylonity.bonsai.clockwork.Clockwork;
-import dev.xylonity.bonsai.clockwork.common.entity.custom.DragonflyEntity;
+import dev.xylonity.bonsai.clockwork.common.entity.passive.DragonflyEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 

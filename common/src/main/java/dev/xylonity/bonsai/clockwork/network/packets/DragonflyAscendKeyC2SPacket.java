@@ -1,7 +1,7 @@
 package dev.xylonity.bonsai.clockwork.network.packets;
 
 import dev.xylonity.bonsai.clockwork.Clockwork;
-import dev.xylonity.bonsai.clockwork.common.entity.custom.DragonflyEntity;
+import dev.xylonity.bonsai.clockwork.common.entity.passive.DragonflyEntity;
 import dev.xylonity.knightlib.network.PacketCodec;
 import dev.xylonity.knightlib.network.PacketType;
 import dev.xylonity.knightlib.network.ServerboundPacketType;

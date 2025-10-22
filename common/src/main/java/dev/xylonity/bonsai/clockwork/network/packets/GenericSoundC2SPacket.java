@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundSource;
 
 public record GenericSoundC2SPacket(int flag) {
 
-    private static final ResourceLocation ID = new ResourceLocation(Clockwork.MOD_ID, "dragonfly_ascend_key");
+    private static final ResourceLocation ID = new ResourceLocation(Clockwork.MOD_ID, "generic_sound_packet");
 
     public static final ServerboundPacketType<GenericSoundC2SPacket> TYPE =
             PacketType.serverbound(
