@@ -3,6 +3,7 @@ package dev.xylonity.bonsai.clockwork;
 import dev.xylonity.bonsai.clockwork.platform.ClockworkPlatform;
 import dev.xylonity.bonsai.clockwork.proxy.IProxy;
 import dev.xylonity.bonsai.clockwork.registry.*;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,10 @@ public class Clockwork {
         ClockworkSounds.SOUNDS.init();
         ClockworkCreativeTabs.CREATIVE_MODE_TABS.init();
         ClockworkParticles.PARTICLES.init();
+    }
+
+    public static ResourceLocation resource(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 
 }

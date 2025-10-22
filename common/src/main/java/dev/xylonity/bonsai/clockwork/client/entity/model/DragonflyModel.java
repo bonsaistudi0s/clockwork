@@ -9,17 +9,17 @@ public class DragonflyModel extends GeoModel<DragonflyEntity> {
 
     @Override
     public ResourceLocation getModelResource(DragonflyEntity dragonflyEntity) {
-        return new ResourceLocation(Clockwork.MOD_ID, "geo/dragonfly.geo.json");
+        return Clockwork.resource("geo/dragonfly.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(DragonflyEntity dragonflyEntity) {
-        return new ResourceLocation(Clockwork.MOD_ID, "textures/entity/dragonfly.png");
+        return Clockwork.resource("textures/entity/dragonfly.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(DragonflyEntity dragonflyEntity) {
-        return new ResourceLocation(Clockwork.MOD_ID, "animations/dragonfly.animation.json");
+        return Clockwork.resource("animations/dragonfly.animation.json");
     }
 
 }

@@ -15,17 +15,17 @@ public class GenericArmorItemModel extends GeoModel<GenericGeckoArmorItem> {
 
     @Override
     public ResourceLocation getModelResource(GenericGeckoArmorItem animatable) {
-        return new ResourceLocation(Clockwork.MOD_ID, "geo/" + resourceKey + ".geo.json");
+        return Clockwork.resource("geo/" + resourceKey + ".geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(GenericGeckoArmorItem animatable) {
-        return new ResourceLocation(Clockwork.MOD_ID, "textures/armor/" + resourceKey + ".png");
+        return Clockwork.resource("textures/armor/" + resourceKey + ".png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(GenericGeckoArmorItem animatable) {
-        return new ResourceLocation(Clockwork.MOD_ID, "animations/" + resourceKey + ".animation.json");
+        return Clockwork.resource("animations/" + resourceKey + ".animation.json");
     }
 
 }
