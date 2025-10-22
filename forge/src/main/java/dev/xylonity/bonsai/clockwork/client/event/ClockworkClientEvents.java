@@ -7,7 +7,7 @@ import dev.xylonity.bonsai.clockwork.client.entity.renderer.DragonflyRenderer;
 import dev.xylonity.bonsai.clockwork.client.particle.PotionSprayParticle;
 import dev.xylonity.bonsai.clockwork.client.projectile.renderer.ClockworkArrowProjectileRenderer;
 import dev.xylonity.bonsai.clockwork.client.projectile.renderer.GenericProjectileRenderer;
-import dev.xylonity.bonsai.clockwork.client.sound.PotionSprayerSoundHandler;
+import dev.xylonity.bonsai.clockwork.client.sound.handler.custom.PotionSprayerSoundHandler;
 import dev.xylonity.bonsai.clockwork.common.entity.passive.DragonflyEntity;
 import dev.xylonity.bonsai.clockwork.common.item.ClockworkWings;
 import dev.xylonity.bonsai.clockwork.client.sound.ClientSoundProxy;

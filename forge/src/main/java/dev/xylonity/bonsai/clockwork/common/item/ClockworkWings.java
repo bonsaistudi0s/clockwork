@@ -7,6 +7,7 @@ import dev.xylonity.bonsai.clockwork.common.item.generic.GenericGeckoArmorItem;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.network.packets.GenericSoundC2SPacket;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.knightlib.api.network.Network;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -462,6 +463,11 @@ public class ClockworkWings extends GenericGeckoArmorItem {
         long left = until - now;
 
         return (int) Math.max(0, left);
+    }
+
+    @Override
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
+        return repairCandidate.getItem() == ClockworkItems.CLOCKWORK_GEAR.get();
     }
 
 }
