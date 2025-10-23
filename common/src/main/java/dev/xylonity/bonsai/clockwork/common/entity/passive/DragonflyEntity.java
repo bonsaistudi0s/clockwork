@@ -4,13 +4,17 @@ import dev.xylonity.bonsai.clockwork.common.entity.PassiveClockworkEntity;
 import dev.xylonity.bonsai.clockwork.client.sound.Sounds;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.network.packets.DragonflyAscendKeyC2SPacket;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import dev.xylonity.knightlib.api.network.Network;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -121,6 +125,26 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
 
     @Override
     public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+        if (player.getItemInHand(hand).getItem() == ClockworkItems.CLOCKWORK_GEAR.get()) {
+            if (getHealth() < getMaxHealth()) {
+                if (level().isClientSide) {
+                    return InteractionResult.SUCCESS;
+                }
+
+                this.heal((float) ClockworkConfig.CLOCKWORK_GEAR_HEAL_AMOUNT);
+
+                if (!player.getAbilities().instabuild) {
+                    player.getItemInHand(hand).shrink(1);
+                }
+
+                generateHealParticles();
+                level().playSound(null, blockPosition(), ClockworkSounds.DRAGONFLY_GEAR.get(), SoundSource.BLOCKS, 1, 1);
+
+                return InteractionResult.SUCCESS;
+            }
+
+        }
+
         if (!player.isSecondaryUseActive()) {
             if (!level().isClientSide()) {
                 player.startRiding(this, true);
@@ -130,6 +154,18 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
         }
 
         return super.mobInteract(player, hand);
+    }
+
+    private void generateHealParticles() {
+        for (int i = 0; i < 20; i++) {
+            double dx = (this.random.nextDouble() - 0.5) * 1.25;
+            double dy = (this.random.nextDouble() - 0.5) * 1.25;
+            double dz = (this.random.nextDouble() - 0.5) * 1.25;
+            if (this.level() instanceof ServerLevel level) {
+                level.sendParticles(ParticleTypes.COMPOSTER, position().x, this.getY() + getBbHeight() * Math.random(), position().z, 1, dx, dy, dz, 0.1);
+            }
+        }
+
     }
 
     @Override
@@ -258,6 +294,7 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
             this.level().broadcastEntityEvent(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
+
     }
 
     @Override

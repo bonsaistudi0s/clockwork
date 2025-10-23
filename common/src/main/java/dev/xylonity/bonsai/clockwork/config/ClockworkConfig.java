@@ -62,4 +62,11 @@ public final class ClockworkConfig {
     )
     public static double DRAGONFLY_DEFAULT_WALKING_SPEED = 0.20f;
 
+    @ConfigEntry(
+            category = "Dragonfly",
+            comment = "How much health does the clockwork gear restore",
+            min = 0.0, max = 1000.0
+    )
+    public static double CLOCKWORK_GEAR_HEAL_AMOUNT = 3;
+
 }
