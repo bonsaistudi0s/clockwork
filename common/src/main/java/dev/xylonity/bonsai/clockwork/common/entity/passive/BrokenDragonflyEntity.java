@@ -17,6 +17,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -110,6 +112,14 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     @Override
     public void push(double x, double y, double z) {
         ;;
+    }
+
+    @Override
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
+        super.dropCustomDeathLoot(source, looting, recentlyHit);
+        this.spawnAtLocation(new ItemStack(ClockworkItems.CLOCKWORK_GEAR.get(), random.nextInt(3)));
+        this.spawnAtLocation(new ItemStack(Items.COPPER_INGOT, random.nextInt(3)));
+        this.spawnAtLocation(new ItemStack(Items.GOLD_INGOT, random.nextInt(3)));
     }
 
     @Nullable
