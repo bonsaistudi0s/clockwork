@@ -180,5 +180,21 @@
         "name": "clockwork:dragonfly_gear_4"
       }
     ]
+  },
+  "clockwork_arrow_hit_ground": {
+    "sounds": [
+      {
+        "name": "clockwork:clockwork_arrow_hit_ground_1"
+      },
+      {
+        "name": "clockwork:clockwork_arrow_hit_ground_2"
+      },
+      {
+        "name": "clockwork:clockwork_arrow_hit_ground_3"
+      },
+      {
+        "name": "clockwork:clockwork_arrow_hit_ground_4"
+      }
+    ]
   }
 }

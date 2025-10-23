@@ -16,6 +16,8 @@ public class ClockworkSounds {
     public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_FLAP = SOUNDS.register("clockwork_wings_flap", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_wings_flap")));
     public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_OPEN = SOUNDS.register("clockwork_wings_open", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_wings_open")));
 
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_ARROW_HIT_GROUND = SOUNDS.register("clockwork_arrow_hit_ground", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_arrow_hit_ground")));
+
     public static final ResourceEntry<SoundEvent> DRAGONFLY_FLY = SOUNDS.register("dragonfly_fly_loop", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_fly_loop")));
     public static final ResourceEntry<SoundEvent> DRAGONFLY_HURT = SOUNDS.register("dragonfly_hurt", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_hurt")));
     public static final ResourceEntry<SoundEvent> DRAGONFLY_IDLE = SOUNDS.register("dragonfly_idle_loop", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_idle_loop")));

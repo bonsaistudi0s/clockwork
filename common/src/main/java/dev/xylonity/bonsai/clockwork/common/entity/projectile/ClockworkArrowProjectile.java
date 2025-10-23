@@ -2,11 +2,13 @@ package dev.xylonity.bonsai.clockwork.common.entity.projectile;
 
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -50,10 +52,12 @@ public class ClockworkArrowProjectile extends AbstractArrow implements GeoEntity
 
     public ClockworkArrowProjectile(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
+        setSoundEvent(ClockworkSounds.CLOCKWORK_ARROW_HIT_GROUND.get());
     }
 
     public ClockworkArrowProjectile(Level level, LivingEntity shooter) {
         super(ClockworkEntities.CLOCKWORK_ARROW_PROJECTILE.get(), shooter, level);
+        setSoundEvent(ClockworkSounds.CLOCKWORK_ARROW_HIT_GROUND.get());
     }
 
     public void setTarget(@Nullable LivingEntity target) {
