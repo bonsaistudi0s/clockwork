@@ -248,7 +248,7 @@ public class ScopeCrossbow extends CrossbowItem implements GeoItem {
 
     @Override
     public Predicate<ItemStack> getAllSupportedProjectiles() {
-        return s -> s.getItem() instanceof ArrowItem;
+        return s -> s.getItem() instanceof ArrowItem || s.is(Items.FIREWORK_ROCKET);
     }
 
     private <T extends GeoAnimatable> PlayState statePredicate(AnimationState<T> event) {
@@ -344,7 +344,7 @@ public class ScopeCrossbow extends CrossbowItem implements GeoItem {
         }
 
         ItemStack ammo = user.getProjectile(crossbowStack);
-        return !ammo.isEmpty() && ammo.getItem() instanceof ArrowItem;
+        return !ammo.isEmpty() && ammo.getItem() instanceof ArrowItem || ammo.getItem() == Items.FIREWORK_ROCKET;
     }
 
     /**
