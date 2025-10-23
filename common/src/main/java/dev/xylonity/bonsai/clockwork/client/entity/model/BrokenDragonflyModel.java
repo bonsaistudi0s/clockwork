@@ -9,19 +9,11 @@ public class BrokenDragonflyModel extends GeoModel<BrokenDragonflyEntity> {
 
     @Override
     public ResourceLocation getModelResource(BrokenDragonflyEntity dragonflyEntity) {
-        if (dragonflyEntity.getActivatedTimer() <= BrokenDragonflyEntity.ANIMATION_ACTIVATE_TICKS) {
-            return Clockwork.resource("geo/dragonfly.geo.json");
-        }
-
         return Clockwork.resource("geo/broken_dragonfly.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(BrokenDragonflyEntity dragonflyEntity) {
-        if (dragonflyEntity.getActivatedTimer() <= BrokenDragonflyEntity.ANIMATION_ACTIVATE_TICKS) {
-            return Clockwork.resource("textures/entity/dragonfly.png");
-        }
-
         return Clockwork.resource("textures/entity/broken_dragonfly.png");
     }
 

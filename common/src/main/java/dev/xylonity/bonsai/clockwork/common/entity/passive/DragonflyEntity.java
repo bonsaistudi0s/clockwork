@@ -45,10 +45,14 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     private final RawAnimation FLY = RawAnimation.begin().thenPlay("fly");
     private final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
     private final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
+    private final RawAnimation ACTIVATE = RawAnimation.begin().thenPlay("activate");
 
     // 0 walk, 1 flying, 2 idle (floor)
     public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DragonflyEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> ASCENDING = SynchedEntityData.defineId(DragonflyEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Integer> ACTIVATING_TICKS = SynchedEntityData.defineId(DragonflyEntity.class, EntityDataSerializers.INT);
+
+    public static final int ANIMATION_ACTIVATE_TICKS = 28;
 
     public DragonflyEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -69,6 +73,7 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
         super.defineSynchedData();
         this.entityData.define(STATE, 0);
         this.entityData.define(ASCENDING, false);
+        this.entityData.define(ACTIVATING_TICKS, -1);
     }
 
     public void setState(int state) {
@@ -90,6 +95,14 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
         return this.entityData.get(ASCENDING);
     }
 
+    public void setActivatingTicks(int activatingTicks) {
+        this.entityData.set(ACTIVATING_TICKS, activatingTicks);
+    }
+
+    public int getActivatingTicks() {
+        return this.entityData.get(ACTIVATING_TICKS);
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -101,6 +114,11 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
             if (getControllingPassenger() == null && !onGround() && getState() == 1) {
                 this.setDeltaMovement(getDeltaMovement().x, -0.1, getDeltaMovement().z);
             }
+
+            if (getActivatingTicks() >= 0 && getActivatingTicks() <= ANIMATION_ACTIVATE_TICKS) {
+                setActivatingTicks(getActivatingTicks() + 1);
+            }
+
         }
 
         if (level().isClientSide) {
@@ -305,6 +323,9 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
         if (isDeadOrDying()) {
             event.setAnimation(DEATH);
+        }
+        else if (getActivatingTicks() >= 0 && getActivatingTicks() <= ANIMATION_ACTIVATE_TICKS) {
+            event.setAnimation(ACTIVATE);
         }
         else if (getState() == 1) {
             event.setAnimation(FLY);

@@ -6,10 +6,6 @@ import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -33,13 +29,7 @@ import software.bernie.geckolib.core.object.PlayState;
 
 public class BrokenDragonflyEntity extends HostileClockworkEntity {
 
-    private final RawAnimation ACTIVATE = RawAnimation.begin().thenPlay("activate");
     private final RawAnimation DEACTIVATED = RawAnimation.begin().thenPlay("deactivated");
-
-    // 0 walk, 1 flying, 2 idle (floor)
-    public static final EntityDataAccessor<Integer> ACTIVATED_TIMER = SynchedEntityData.defineId(BrokenDragonflyEntity.class, EntityDataSerializers.INT);
-
-    public static final int ANIMATION_ACTIVATE_TICKS = 28;
 
     public BrokenDragonflyEntity(EntityType<? extends HostileClockworkEntity> entityType, Level level) {
         super(entityType, level);
@@ -56,47 +46,6 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ACTIVATED_TIMER, ANIMATION_ACTIVATE_TICKS + 1);
-    }
-
-    public void setActivatedTimer(int activatedTicks) {
-        this.entityData.set(ACTIVATED_TIMER, activatedTicks);
-    }
-
-    public int getActivatedTimer() {
-        return this.entityData.get(ACTIVATED_TIMER);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-
-        if (!level().isClientSide) {
-            if (getActivatedTimer() <= ANIMATION_ACTIVATE_TICKS) {
-
-                if (getActivatedTimer() == 0) {
-                    DragonflyEntity entity = ClockworkEntities.DRAGONFLY.get().create(level());
-                    if (entity != null) {
-                        entity.setPos(position());
-                        level().addFreshEntity(entity);
-                    }
-
-                    level().playSound(null, blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1, 1);
-                    generatePoofParticles();
-                    this.discard();
-
-                    return;
-                }
-
-                setActivatedTimer(getActivatedTimer() - 1);
-            }
-        }
-
-    }
-
-    @Override
     public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (player.getItemInHand(hand).getItem() == ClockworkItems.CLOCKWORK_GEAR.get()) {
             if (level().isClientSide) {
@@ -110,8 +59,16 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
             level().playSound(null, blockPosition(), ClockworkSounds.DRAGONFLY_GEAR.get(), SoundSource.BLOCKS, 1, 1);
 
             if (random.nextFloat() <= 0.3f) {
-                // Starts the counter
-                setActivatedTimer(getActivatedTimer() - 1);
+                DragonflyEntity entity = ClockworkEntities.DRAGONFLY.get().create(level());
+                if (entity != null) {
+                    entity.setPos(position());
+                    entity.setActivatingTicks(0);
+                    level().addFreshEntity(entity);
+                }
+
+                level().playSound(null, blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1, 1);
+                generatePoofParticles();
+                this.discard();
             }
             else {
                 generateFailParticles();
@@ -127,24 +84,24 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     }
 
     private void generatePoofParticles() {
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             double dx = (this.random.nextDouble() - 0.5) * 1.25;
             double dy = (this.random.nextDouble() - 0.5) * 1.25;
             double dz = (this.random.nextDouble() - 0.5) * 1.25;
             if (this.level() instanceof ServerLevel level) {
-                level.sendParticles(ParticleTypes.POOF, position().x, this.getY() + getBbHeight() * Math.random(), position().z, 1, dx, dy, dz, 0.1);
+                level.sendParticles(ParticleTypes.POOF, position().x, this.getY() + getBbHeight() * Math.random(), position().z, 1, dx, dy, dz, 0);
             }
         }
 
     }
 
     private void generateFailParticles() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 15; i++) {
             double dx = (this.random.nextDouble() - 0.5) * 1.25;
             double dy = (this.random.nextDouble() - 0.5) * 1.25;
             double dz = (this.random.nextDouble() - 0.5) * 1.25;
             if (this.level() instanceof ServerLevel level) {
-                level.sendParticles(ParticleTypes.SMOKE, position().x, this.getY() + getBbHeight() * Math.random(), position().z, 1, dx, dy, dz, 0.1);
+                level.sendParticles(ParticleTypes.SMOKE, position().x, this.getY() + getBbHeight() * Math.random(), position().z, 1, dx, dy, dz, 0);
             }
         }
 
@@ -153,21 +110,6 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     @Override
     public void push(double x, double y, double z) {
         ;;
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("ActivatedTimer", getActivatedTimer());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        if (compound.contains("ActivatedTimer")) {
-            this.setActivatedTimer(compound.getInt("ActivatedTimer"));
-        }
-
     }
 
     @Nullable
@@ -182,13 +124,7 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
-        if (getActivatedTimer() <= ANIMATION_ACTIVATE_TICKS) {
-            event.setAnimation(ACTIVATE);
-        }
-        else {
-            event.setAnimation(DEACTIVATED);
-        }
-
+        event.setAnimation(DEACTIVATED);
         return PlayState.CONTINUE;
     }
 
