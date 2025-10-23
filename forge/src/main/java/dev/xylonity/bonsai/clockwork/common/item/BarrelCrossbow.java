@@ -428,9 +428,9 @@ public class BarrelCrossbow extends CrossbowItem implements GeoItem {
             ItemStack ammo = list.get(i);
             boolean creative = shooter instanceof Player && ((Player)shooter).getAbilities().instabuild;
             if (!ammo.isEmpty()) {
-                if (i == 0) shootProjectileCW(level, shooter, usedHand, crossbowStack, ammo, pitches[i], creative, velocity * 0.8f, inaccuracy, 0.0F);
-                else if (i == 1) shootProjectileCW(level, shooter, usedHand, crossbowStack, ammo, pitches[i], creative, velocity * 0.8f, inaccuracy, -10.0F);
-                else if (i == 2) shootProjectileCW(level, shooter, usedHand, crossbowStack, ammo, pitches[i], creative, velocity * 0.8f, inaccuracy, 10.0F);
+                if (i == 0) shootProjectileCW(level, shooter, usedHand, crossbowStack, ammo, pitches[i], creative, velocity * 0.7f, inaccuracy, 0.0F);
+                else if (i == 1) shootProjectileCW(level, shooter, usedHand, crossbowStack, ammo, pitches[i], creative, velocity * 0.7f, inaccuracy, -10.0F);
+                else if (i == 2) shootProjectileCW(level, shooter, usedHand, crossbowStack, ammo, pitches[i], creative, velocity * 0.7f, inaccuracy, 10.0F);
             }
         }
 
