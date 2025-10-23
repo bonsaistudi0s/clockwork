@@ -151,6 +151,11 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     }
 
     @Override
+    public void push(double x, double y, double z) {
+        ;;
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("ActivatedTimer", getActivatedTimer());
