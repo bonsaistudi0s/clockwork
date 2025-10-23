@@ -275,11 +275,14 @@ public class BarrelCrossbow extends CrossbowItem implements GeoItem {
                     avoidVanillaSounds(level, entity, stack);
 
                     if (isCharged(stack)) {
-                        setPhase(stack, PHASE_LOADED);
+                        triggerShoot(stack, entity);
+                        performShootingCW(level, entity, entity.getUsedItemHand(), stack, baseVelocityFor(stack), 1.0F);
 
-                        setNextActionTick(stack, now);
+                        setCharged(stack, false);
+                        clearLoadFlags(stack);
 
-                        stack.getOrCreateTag().putBoolean(NBT_CAN_LOAD, false);
+                        setPhase(stack, PHASE_SHOOTING);
+                        setNextActionTick(stack, now + ANIMATION_SHOOT_TICKS);
                     }
                     else {
                         entity.stopUsingItem();

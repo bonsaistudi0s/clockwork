@@ -83,10 +83,29 @@ public class BarrelCrossbowRenderer extends GeoItemRenderer<BarrelCrossbow> {
         if (player != null && player.isUsingItem() && player.getMainHandItem() == stack && !CrossbowItem.isCharged(stack)) {
 
             float pullProgress = getPullProgress(stack, player);
-            if (pullProgress >= 1.0f) {
+            if (pullProgress >= 0.55f) {
+                Minecraft minecraft = Minecraft.getInstance();
+                ItemStack projectileToLoad = null;
+                if (minecraft.player != null && minecraft.player.isUsingItem() && minecraft.player.getUseItem().getItem() instanceof BarrelCrossbow) {
+                    projectileToLoad = minecraft.player.getProjectile(stack);
+                }
+
+                if (projectileToLoad != null && !projectileToLoad.isEmpty()) {
+                    if (projectileToLoad.is(ClockworkItems.CLOCKWORK_ARROW.get())) {
+                        return "barrel_crossbow_clockworkarrow";
+                    }
+                    else if (projectileToLoad.is(Items.FIREWORK_ROCKET)) {
+                        return "barrel_crossbow_firework";
+                    }
+
+                }
+
+                return "barrel_crossbow_arrow";
+            }
+            else if (pullProgress >= 0.45f) {
                 return "barrel_crossbow_pulling_2";
             }
-            else if (pullProgress >= 0.58f) {
+            else if (pullProgress >= 0.25f) {
                 return "barrel_crossbow_pulling_1";
             }
             else {
