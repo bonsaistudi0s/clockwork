@@ -12,10 +12,13 @@ import dev.xylonity.bonsai.clockwork.network.packets.PotionSprayerParticlesC2SPa
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.knightlib.api.network.Network;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -39,6 +42,11 @@ public class ClockworkServerEvents {
                 Network.register(GenericSoundC2SPacket.TYPE);
                 Network.register(PotionSprayerParticlesC2SPacket.TYPE);
             });
+        }
+
+        @SubscribeEvent
+        public static void registerSpawnPlacements(SpawnPlacementRegisterEvent event) {
+            event.register(ClockworkEntities.BROKEN_DRAGONFLY.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BrokenDragonflyEntity::checkAnyLightMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.REPLACE);
         }
 
     }

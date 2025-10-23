@@ -1,6 +1,7 @@
 package dev.xylonity.bonsai.clockwork;
 
 import dev.xylonity.bonsai.clockwork.common.CommonProxy;
+import dev.xylonity.bonsai.clockwork.common.biome.ClockworkSpawnBiomeModifier;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.proxy.IProxy;
 import dev.xylonity.knightlib.config.ConfigComposer;
@@ -29,6 +30,9 @@ public class ClockworkForge {
         else {
             Clockwork.PROXY = new CommonProxy();
         }
+
+        ClockworkSpawnBiomeModifier.BIOME_MODIFIER.register(eventBus);
+        ClockworkSpawnBiomeModifier.BIOME_MODIFIER.register("clockwork_mob_spawns", ClockworkSpawnBiomeModifier::makeCodec);
 
         ConfigComposer.registerConfig(ClockworkConfig.class, eventBus);
 
