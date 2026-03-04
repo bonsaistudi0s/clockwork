@@ -3,6 +3,8 @@ package dev.xylonity.bonsai.clockwork;
 import dev.xylonity.bonsai.clockwork.platform.ClockworkPlatform;
 import dev.xylonity.bonsai.clockwork.proxy.IProxy;
 import dev.xylonity.bonsai.clockwork.registry.*;
+import dev.xylonity.knightlib.api.network.Network;
+import dev.xylonity.knightlib.api.network.NetworkEndpoint;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ public class Clockwork {
     public static IProxy PROXY;
 
     public static final ClockworkPlatform PLATFORM = ServiceLoader.load(ClockworkPlatform.class).findFirst().orElseThrow();
+    public static final NetworkEndpoint NETWORK = Network.endpoint(MOD_ID);
 
     public static void init() {
         ClockworkItems.ITEMS.init();
@@ -24,6 +27,9 @@ public class Clockwork {
         ClockworkSounds.SOUNDS.init();
         ClockworkCreativeTabs.CREATIVE_MODE_TABS.init();
         ClockworkParticles.PARTICLES.init();
+
+        ClockworkEntitySpawns.init();
+        ClockworkPersistentSounds.init();
     }
 
     public static ResourceLocation resource(String path) {
