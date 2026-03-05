@@ -1,6 +1,7 @@
 package dev.xylonity.bonsai.clockwork.registry;
 
 import dev.xylonity.bonsai.clockwork.Clockwork;
+import dev.xylonity.knightlib.KnightLib;
 import dev.xylonity.knightlib.api.registrar.ResourceDispatcher;
 import dev.xylonity.knightlib.api.registrar.ResourceRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,7 +17,7 @@ public class ClockworkCreativeTabs {
 
     public static final Supplier<CreativeModeTab> CLOCKWORK_TAB =
             CREATIVE_MODE_TABS.register("clockwork_creative_tab",
-                    () -> Clockwork.PLATFORM.creativeTabBuilder()
+                    () -> KnightLib.PLATFORM.creativeTabBuilder()
                             .icon(() -> new ItemStack(ClockworkItems.CLOCKWORK_GEAR.get()))
                             .title(Component.translatable("creativetab.clockwork.title"))
                             .displayItems((display, output) -> {
