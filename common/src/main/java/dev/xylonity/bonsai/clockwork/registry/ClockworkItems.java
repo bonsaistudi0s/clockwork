@@ -22,9 +22,9 @@ public class ClockworkItems {
     public static final ResourceEntry<Item> CROSSBOW_BARREL = ITEMS.register("crossbow_barrel", () -> new Item(new Item.Properties()));
     public static final ResourceEntry<Item> CLOCKWORK_ARROW = ITEMS.register("clockwork_arrow", () -> new ClockworkArrow(new Item.Properties()));
 
-    public static final ResourceEntry<Item> BARREL_CROSSBOW = ITEMS.register("barrel_crossbow", () -> new BarrelCrossbow(new Item.Properties()));
-    public static final ResourceEntry<Item> SCOPE_CROSSBOW = ITEMS.register("scope_crossbow", () -> new ScopeCrossbow(new Item.Properties()));
+    public static final ResourceEntry<Item> BARREL_CROSSBOW = ITEMS.register("barrel_crossbow", () -> new BarrelCrossbow(new Item.Properties().stacksTo(1)));
+    public static final ResourceEntry<Item> SCOPE_CROSSBOW = ITEMS.register("scope_crossbow", () -> new ScopeCrossbow(new Item.Properties().stacksTo(1)));
+    public static final ResourceEntry<Item> CLOCKWORK_POTION_SPRAYER = ITEMS.register("clockwork_potion_sprayer", () -> new PotionSprayer(new Item.Properties().stacksTo(1)));
     public static final ResourceEntry<Item> CLOCKWORK_WINGS = ITEMS.register("clockwork_wings", () -> new ClockworkWings(new Item.Properties().stacksTo(1), ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE));
-    public static final ResourceEntry<Item> CLOCKWORK_POTION_SPRAYER = ITEMS.register("clockwork_potion_sprayer", () -> new PotionSprayer(new Item.Properties()));
 
 }
