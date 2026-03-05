@@ -1,41 +1,37 @@
 package dev.xylonity.bonsai.clockwork;
 
+import dev.xylonity.bonsai.clockwork.client.ClientProxy;
 import dev.xylonity.bonsai.clockwork.common.CommonProxy;
-import dev.xylonity.bonsai.clockwork.common.biome.ClockworkSpawnBiomeModifier;
+import dev.xylonity.bonsai.clockwork.common.event.ClockworkServerEvents;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
-import dev.xylonity.bonsai.clockwork.proxy.IProxy;
-import dev.xylonity.knightlib.config.ConfigComposer;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkPackets;
+import dev.xylonity.knightlib.api.config.ConfigComposer;
+import dev.xylonity.knightlib.api.event.KnightLibEvents;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
 
 @Mod(Clockwork.MOD_ID)
 public class ClockworkForge {
 
     public ClockworkForge() {
+        // Common package proxy registration
+        Clockwork.PROXY = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        if (FMLLoader.getDist().isClient()) {
-            try {
-                Class<?> cls = Class.forName("dev.xylonity.bonsai.clockwork.client.ClientProxy");
-                Clockwork.PROXY = (IProxy) cls.getDeclaredConstructor().newInstance();
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        // Config registrar
+        ConfigComposer.registerConfig(Clockwork.MOD_ID, ClockworkConfig.class);
 
-        }
-        else {
-            Clockwork.PROXY = new CommonProxy();
-        }
+        // Registering all packets for both sides
+        ClockworkPackets.registerAll();
 
-        ClockworkSpawnBiomeModifier.BIOME_MODIFIER.register(eventBus);
-        ClockworkSpawnBiomeModifier.BIOME_MODIFIER.register("clockwork_mob_spawns", ClockworkSpawnBiomeModifier::makeCodec);
+        // Event registrar
+        KnightLibEvents.SERVER.register(ClockworkServerEvents.class);
+        Clockwork.PROXY.registerClientEvents();
 
-        ConfigComposer.registerConfig(ClockworkConfig.class, eventBus);
-
+        // Common package differ
         Clockwork.init();
     }
 
