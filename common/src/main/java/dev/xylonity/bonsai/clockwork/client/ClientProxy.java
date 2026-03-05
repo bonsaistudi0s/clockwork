@@ -1,7 +1,9 @@
 package dev.xylonity.bonsai.clockwork.client;
 
+import dev.xylonity.bonsai.clockwork.client.event.ClockworkClientEvents;
 import dev.xylonity.bonsai.clockwork.proxy.IProxy;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
+import dev.xylonity.knightlib.api.event.KnightLibEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +22,11 @@ public class ClientProxy implements IProxy {
     @Override
     public Player getClientPlayer() {
         return Minecraft.getInstance().player;
+    }
+
+    @Override
+    public void registerClientEvents() {
+        KnightLibEvents.CLIENT.register(ClockworkClientEvents.class);
     }
 
 }
