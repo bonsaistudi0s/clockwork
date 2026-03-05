@@ -1,9 +1,12 @@
 package dev.xylonity.bonsai.clockwork.config;
 
-import dev.xylonity.knightlib.config.api.AutoConfig;
-import dev.xylonity.knightlib.config.api.ConfigEntry;
+import dev.xylonity.knightlib.api.config.AutoConfig;
+import dev.xylonity.knightlib.api.config.ConfigEntry;
 
-@AutoConfig(file = "clockwork")
+@AutoConfig(
+        file = "clockwork",
+        accentColor = 0xFFC48533
+)
 public final class ClockworkConfig {
 
     @ConfigEntry(
