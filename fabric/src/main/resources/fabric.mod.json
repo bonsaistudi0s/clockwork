@@ -19,18 +19,19 @@
           "dev.xylonity.bonsai.clockwork.ClockworkFabric"
         ],
         "client": [
-            "dev.xylonity.bonsai.clockwork.ClockworkFabric"
+            "dev.xylonity.bonsai.clockwork.ClockworkFabricClient"
         ]
     },
     "mixins": [
-        "clockwork.mixins.json"
+        "clockwork.mixins.json",
+        "clockwork.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.14",
         "fabric": "*",
         "minecraft": "${minecraft_version}",
         "java": ">=17",
-        "knightlib": ">=1.4.0"
+        "knightlib": "*"
     },
     "suggests": {
         "another-mod": "*"
