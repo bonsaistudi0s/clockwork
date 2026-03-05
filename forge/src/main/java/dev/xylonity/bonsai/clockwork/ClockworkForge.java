@@ -5,6 +5,7 @@ import dev.xylonity.bonsai.clockwork.common.CommonProxy;
 import dev.xylonity.bonsai.clockwork.common.event.ClockworkServerEvents;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkPackets;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkPersistentSounds;
 import dev.xylonity.knightlib.api.config.ConfigComposer;
 import dev.xylonity.knightlib.api.event.KnightLibEvents;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -30,6 +31,8 @@ public class ClockworkForge {
         // Event registrar
         KnightLibEvents.SERVER.register(ClockworkServerEvents.class);
         Clockwork.PROXY.registerClientEvents();
+
+        ClockworkPersistentSounds.init();
 
         // Common package differ
         Clockwork.init();

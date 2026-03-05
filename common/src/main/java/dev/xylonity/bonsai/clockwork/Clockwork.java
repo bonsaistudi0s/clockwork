@@ -29,7 +29,6 @@ public class Clockwork {
         ClockworkParticles.PARTICLES.init();
 
         ClockworkEntitySpawns.init();
-        ClockworkPersistentSounds.init();
     }
 
     public static ResourceLocation resource(String path) {
