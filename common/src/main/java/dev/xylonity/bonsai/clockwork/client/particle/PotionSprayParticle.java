@@ -5,13 +5,13 @@ import dev.xylonity.knightlib.api.util.KnightLibUtil;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
 public class PotionSprayParticle extends TextureSheetParticle {
+
     private final SpriteSet spritesset;
 
     private int frameIndex = 0;
@@ -23,18 +23,6 @@ public class PotionSprayParticle extends TextureSheetParticle {
     private static final int GROUND_FRAME_DURATION_TICKS = 3;
     private static final int MAX_FRAME_INDEX = 7;
 
-    private static double defaultVelocityX = 0;
-    private static double defaultVelocityY = 0;
-    private static double defaultVelocityZ = 0;
-    private static int rgb;
-
-    public static void setDefaultVelocityAndColor(double vx, double vy, double vz, int color) {
-        defaultVelocityX = vx;
-        defaultVelocityY = vy;
-        defaultVelocityZ = vz;
-        rgb = color;
-    }
-
     public PotionSprayParticle(ClientLevel world, double x, double y, double z, SpriteSet sprites, double velX, double velY, double velZ) {
         super(world, x, y, z);
         this.spritesset = sprites;
@@ -42,27 +30,15 @@ public class PotionSprayParticle extends TextureSheetParticle {
         this.quadSize = new Random().nextFloat(0.25f, 0.80f);
         this.alpha = 0.0F;
 
-        int color = rgb;
-        this.rCol = ((color >> 16) & 0xFF) / 255f;
-        this.gCol = ((color >> 8) & 0xFF) / 255f;
-        this.bCol = ((color) & 0xFF) / 255f;
-
         this.gravity = 0.55f;
         this.hasPhysics = true;
         this.friction = 0.98F;
 
         this.lifetime = 600;
 
-        if (velX == 0 && velY == 0 && velZ == 0) {
-            this.xd = defaultVelocityX;
-            this.yd = defaultVelocityY;
-            this.zd = defaultVelocityZ;
-        }
-        else {
-            this.xd = velX;
-            this.yd = velY;
-            this.zd = velZ;
-        }
+        this.xd = velX;
+        this.yd = velY;
+        this.zd = velZ;
 
         setFrame(0);
     }
@@ -95,6 +71,7 @@ public class PotionSprayParticle extends TextureSheetParticle {
                     setFrame(frameIndex + 1);
                     airFrameTick = 0;
                 }
+
             }
 
             if (this.onGround) {
@@ -102,6 +79,7 @@ public class PotionSprayParticle extends TextureSheetParticle {
                 landedFrameTick = 0;
                 setFrame(4);
             }
+
         }
         else {
             landedFrameTick++;
@@ -135,11 +113,12 @@ public class PotionSprayParticle extends TextureSheetParticle {
         this.setSprite(this.spritesset.get(this.frameIndex, MAX_FRAME_INDEX + 1));
     }
 
-    private static int clamp(int v, int lo, int hi) {
-        return (v < lo) ? lo : (Math.min(v, hi));
+    private static int clamp(int value, int low, int high) {
+        return (value < low) ? low : (Math.min(value, high));
     }
 
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<PotionSprayParticleData> {
+
         private final SpriteSet sprites;
 
         public Provider(SpriteSet spriteSet) {
@@ -147,18 +126,25 @@ public class PotionSprayParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-            if (dx == 0 && dy == 0 && dz == 0) {
-                Vec3 v = KnightLibUtil.randomVectorInCone(new Vec3(defaultVelocityX, defaultVelocityY, defaultVelocityZ), 45.0, new Random());
-                double f = 0.8 + new Random().nextDouble() * 0.4;
-                dx = v.x * f; dy = v.y * f; dz = v.z * f;
-            }
+        public Particle createParticle(@NotNull PotionSprayParticleData data, @NotNull ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
 
-            PotionSprayParticle p = new PotionSprayParticle(level, x, y, z, this.sprites, dx, dy, dz);
-            p.setPos(x, y, z);
+            final Vec3 direction = KnightLibUtil.randomVectorInCone(
+                    new Vec3(data.velX(), data.velY(), data.velZ()), 45.0, new Random()
+            );
 
-            return p;
+            final double offset = 0.8 + new Random().nextDouble() * 0.4;
+            final PotionSprayParticle particle = new PotionSprayParticle(
+                    level, x, y, z, this.sprites,
+                    direction.x * offset, direction.y * offset, direction.z * offset
+            );
+
+            particle.rCol = ((data.color() >> 16) & 0xFF) / 255f;
+            particle.gCol = ((data.color() >> 8) & 0xFF) / 255f;
+            particle.bCol = ((data.color()) & 0xFF) / 255f;
+
+            return particle;
         }
+
     }
 
 }

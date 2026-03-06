@@ -4,7 +4,6 @@ import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.network.packets.c2s.ClockworkWingsC2SPacket;
 import dev.xylonity.bonsai.clockwork.network.packets.c2s.DragonflyAscendKeyC2SPacket;
 import dev.xylonity.bonsai.clockwork.network.packets.c2s.GenericSoundC2SPacket;
-import dev.xylonity.bonsai.clockwork.network.packets.c2s.PotionSprayerParticlesC2SPacket;
 import dev.xylonity.bonsai.clockwork.network.packets.s2c.UpdatePotionSprayDirS2C;
 
 public class ClockworkPackets {
@@ -22,7 +21,6 @@ public class ClockworkPackets {
         Clockwork.NETWORK.register(GenericSoundC2SPacket.TYPE);
         Clockwork.NETWORK.register(DragonflyAscendKeyC2SPacket.TYPE);
         Clockwork.NETWORK.register(ClockworkWingsC2SPacket.TYPE);
-        Clockwork.NETWORK.register(PotionSprayerParticlesC2SPacket.TYPE);
     }
 
 }

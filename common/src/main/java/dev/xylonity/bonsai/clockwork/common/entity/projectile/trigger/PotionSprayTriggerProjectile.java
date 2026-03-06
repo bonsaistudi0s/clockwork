@@ -30,9 +30,54 @@ public class PotionSprayTriggerProjectile extends GenericTriggerProjectile {
         this.effects = computeAdjustedEffects(potionStack);
     }
 
-    private static List<MobEffectInstance> computeAdjustedEffects(ItemStack stack) {
-        List<MobEffectInstance> originalEffects = PotionUtils.getMobEffects(stack);
-        List<MobEffectInstance> newEffects = new ArrayList<>(originalEffects.size());
+    @Override
+    public void tick() {
+
+        super.tick();
+
+        if (!level().isClientSide && !effects.isEmpty()) {
+            final List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, new AABB(
+                    getX() - 1, getY() - 0.5, getZ() - 1,
+                    getX() + 1, getY() + 0.5, getZ() + 1
+            ));
+
+            for (final LivingEntity entity : entities) {
+                for (final MobEffectInstance effect : effects) {
+                    if (!(entity.equals(getOwner()) && tickCount < 10)) {
+
+                        int duration = 3;
+                        final MobEffectInstance entityEffect = entity.getEffect(effect.getEffect());
+                        if (entity.hasEffect(effect.getEffect()) && entityEffect != null) {
+                            duration = entityEffect.getDuration() + 2;
+                        }
+
+                        entity.addEffect(new MobEffectInstance(
+                                effect.getEffect(),
+                                duration,
+                                effect.getAmplifier(),
+                                effect.isAmbient(),
+                                effect.isVisible(),
+                                effect.showIcon()
+                        ));
+                    }
+                }
+
+            }
+
+        }
+
+        final Vec3 movement = this.getDeltaMovement();
+        this.setDeltaMovement(movement.x * 0.98, movement.y - 0.015f, movement.z * 0.98);
+        this.move(MoverType.SELF, this.getDeltaMovement());
+
+        if (!level().isClientSide && onGround()) {
+            this.discard();
+        }
+    }
+
+    private List<MobEffectInstance> computeAdjustedEffects(ItemStack stack) {
+        final List<MobEffectInstance> originalEffects = PotionUtils.getMobEffects(stack);
+        final List<MobEffectInstance> newEffects = new ArrayList<>(originalEffects.size());
 
         int effectsLeft = 0;
         if (stack.hasTag()) {
@@ -71,38 +116,6 @@ public class PotionSprayTriggerProjectile extends GenericTriggerProjectile {
         }
 
         return newEffects;
-    }
-
-    @Override
-    public void tick() {
-
-        super.tick();
-
-        if (!effects.isEmpty()) {
-            List<LivingEntity> entities = level().getEntitiesOfClass(LivingEntity.class, new AABB(getX() - 1, getY() - 0.5, getZ() - 1, getX() + 1, getY() + 0.5, getZ() + 1));
-            for (LivingEntity entity : entities) {
-                for (MobEffectInstance effect : effects) {
-                    if (!(entity.equals(getOwner()) && tickCount < 10)) {
-                        entity.addEffect(new MobEffectInstance(
-                                effect.getEffect(),
-                                60,
-                                effect.getAmplifier(),
-                                effect.isAmbient(),
-                                effect.isVisible(),
-                                effect.showIcon()
-                        ));
-                    }
-                }
-
-            }
-
-        }
-
-        Vec3 movement = this.getDeltaMovement();
-        this.setDeltaMovement(movement.x * 0.98, movement.y - 0.015f, movement.z * 0.98);
-        this.move(MoverType.SELF, this.getDeltaMovement());
-
-        if (!level().isClientSide && onGround()) this.discard();
     }
 
 }
