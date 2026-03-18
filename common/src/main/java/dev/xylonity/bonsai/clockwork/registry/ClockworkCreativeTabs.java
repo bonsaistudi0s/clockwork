@@ -28,6 +28,8 @@ public class ClockworkCreativeTabs {
                                 output.accept(ClockworkItems.BARREL_CROSSBOW.get());
                                 output.accept(ClockworkItems.SCOPE_CROSSBOW.get());
                                 output.accept(ClockworkItems.CLOCKWORK_POTION_SPRAYER.get());
+                                output.accept(ClockworkItems.CLOCKWORK_FLAMETHROWER.get());
+                                output.accept(ClockworkItems.CLOCKWORK_DRILL.get());
                             })
                             .build());
 
