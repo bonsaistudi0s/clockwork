@@ -74,6 +74,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     public float prevDrillSpinAngle = 0f;
     public float drillSpinAngle = 0f;
 
+    // Generic counters for both blocks mined until breaking the drill and the amount of gears given to the drill when broken
     public int blocksMinedCount = 0;
     public int gearsToRepairCount = 0;
 

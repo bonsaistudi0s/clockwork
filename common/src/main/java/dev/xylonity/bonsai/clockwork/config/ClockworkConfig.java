@@ -72,4 +72,11 @@ public final class ClockworkConfig {
     )
     public static double CLOCKWORK_GEAR_HEAL_AMOUNT = 3;
 
+    @ConfigEntry(
+            category = "Clockwork Drill",
+            comment = "Number of clockwork gears needed to repair the drill once it has broken",
+            min = 1, max = 100
+    )
+    public static int DRILL_CLOCKWORK_GEAR_AMOUNT = 1;
+
 }
