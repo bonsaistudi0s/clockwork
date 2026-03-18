@@ -1,17 +1,25 @@
 package dev.xylonity.bonsai.clockwork.common.entity.tool;
 
 import dev.xylonity.bonsai.clockwork.common.menu.DrillMenu;
+import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
+import dev.xylonity.knightlib.api.util.KnightLibEasings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
@@ -41,7 +49,6 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
-    private static final RawAnimation DRILL = RawAnimation.begin().thenLoop("drill");
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
 
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(ClockworkDrillEntity.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -55,8 +62,22 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     private float breakProgressUpper = 0f;
     private BlockPos breakingPosUpper = null;
 
+    // Smooth drill_1 bone rotation computation angles
     public float drillTilt = 0f;
     public float prevDrillTilt = 0f;
+
+    // Drilling pause counter between the first block and the one above (if present)
+    private int drillingPauseTicks = 0;
+
+    // Drilling animation
+    public float drillSpinFactor = 0f;
+    public float prevDrillSpinAngle = 0f;
+    public float drillSpinAngle = 0f;
+
+    public int blocksMinedCount = 0;
+
+    private static final int DRILLING_PAUSE_DURATION = 7;
+    private static final int BLOCKS_UNTIL_BROKEN = 128;
 
     private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
 
@@ -64,12 +85,15 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         super(entityType, level);
     }
 
-    public static boolean create(final Level level, final BlockPos blockPos, @NotNull final Player player) {
+    public static boolean create(final Level level, final BlockPos blockPos, @NotNull final Player player, @Nullable CompoundTag itemTag) {
         final ClockworkDrillEntity drill = ClockworkEntities.CLOCKWORK_DRILL.get().create(level);
         if (drill != null) {
             drill.setYRot(player.getYRot());
-
             drill.setOwnerUUID(player.getUUID());
+
+            if (itemTag != null) {
+                drill.readAdditionalSaveData(itemTag);
+            }
 
             final BlockPos spawnPos = blockPos.above();
             drill.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
@@ -98,95 +122,197 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             setYHeadRot(Mth.approachDegrees(getYHeadRot(), getYRot(), 12.0f));
             prevDrillTilt = drillTilt;
             if (isDrillingUp()) {
-                drillTilt = Math.min(1f, drillTilt + 0.12f);
+                drillTilt = Math.min(1f, drillTilt + 0.16f);
             }
             else {
-                drillTilt = Math.max(0f, drillTilt - 0.12f);
+                drillTilt = Math.max(0f, drillTilt - 0.16f);
             }
 
+            if (isDrilling()) {
+                drillSpinFactor = Math.min(1f, drillSpinFactor + 0.3f);
+            }
+            else {
+                drillSpinFactor = Math.max(0f, drillSpinFactor - 0.05f);
+            }
+
+            prevDrillSpinAngle = drillSpinAngle;
+            final float easedSpeed = KnightLibEasings.EASE_IN_OUT_SINE.apply(drillSpinFactor);
+            drillSpinAngle += easedSpeed * 36f * Mth.DEG_TO_RAD;
         }
 
         // Broken particles
         if (tickCount % 10 == 0 && isBroken() && !level().isClientSide) {
-            final double offsetX = (random.nextDouble() * 0.5 - 0.25) * 2;
-            final double offsetY = (random.nextDouble() * 0.5 - 0.25) * 2;
-            final double offsetZ = (random.nextDouble() * 0.5 - 0.25) * 2;
-            ((ServerLevel) level()).sendParticles(ParticleTypes.LARGE_SMOKE,
-                    getX(), getY() + getBbHeight() * 0.5f, getZ(), 1, offsetX, offsetY, offsetZ, 0);
+            spawnParticles(ParticleTypes.LARGE_SMOKE, 1);
         }
 
         // Movement
-        if (isActive()) {
-            final float yawRad = getYRot() * Mth.DEG_TO_RAD;
-            final double speed = 0.05;
+        if (!isActive()) {
+            return;
+        }
 
-            final double dirX = -Mth.sin(yawRad);
-            final double dirZ =  Mth.cos(yawRad);
+        final float yawRad = getYRot() * Mth.DEG_TO_RAD;
+        final double speed = 0.05;
 
-            final double lookAhead = 1;
-            final BlockPos ahead = BlockPos.containing(getX() + dirX * lookAhead, getY(), getZ() + dirZ * lookAhead);
-            // If the block in front is air
-            if (level().getBlockState(ahead).isAir()) {
-                setDeltaMovement(dirX * speed, getDeltaMovement().y, dirZ * speed);
-                move(MoverType.SELF, getDeltaMovement());
-                setDrilling(false);
+        final double dirX = -Mth.sin(yawRad);
+        final double dirZ =  Mth.cos(yawRad);
 
-                if (breakingPos != null && !level().isClientSide) {
-                    level().destroyBlockProgress(getId(), breakingPos, -1);
-                    breakingPos = null;
-                    breakProgress = 0f;
+        final double lookAhead = 1;
+        final BlockPos ahead = BlockPos.containing(getX() + dirX * lookAhead, getY(), getZ() + dirZ * lookAhead);
+        final BlockPos aboveAhead = ahead.above();
+
+        if (isDrillingUp()) {
+            setDeltaMovement(0, 0, 0);
+
+            if (!level().isClientSide) {
+                if (drillingPauseTicks > 0) {
+                    drillingPauseTicks--;
+                    if (drillingPauseTicks == 0) {
+                        setDrilling(true);
+                    }
+
                 }
+                else {
+                    mineBlock(aboveAhead, true);
+                }
+
             }
-            // If the block in front is mineable
-            else {
-                setDeltaMovement(0.0, 0.0, 0.0);
-                setDrilling(true);
 
-                // Block breaking
-                if (!level().isClientSide) {
-                    final BlockState state = level().getBlockState(ahead);
+            return;
+        }
 
-                    if (!ahead.equals(breakingPos)) {
-                        if (breakingPos != null) {
-                            level().destroyBlockProgress(getId(), breakingPos, -1);
-                        }
+        if (!level().getBlockState(ahead).isAir()) {
+            setDeltaMovement(0, 0, 0);
+            setDrilling(true);
 
-                        breakingPos = ahead.immutable();
-                        breakProgress = 0f;
-                    }
+            if (!level().isClientSide) {
+                mineBlock(ahead, false);
+            }
 
-                    float hardness = state.getDestroySpeed(level(), ahead);
-                    if (hardness >= 0) {
-                        // Replicates the speed of a stone tool (4 mining speed)
-                        final boolean correctTool = !state.requiresCorrectToolForDrops();
-                        final float delta = 4f / hardness / (correctTool ? 30f : 100f);
+            return;
+        }
 
-                        breakProgress += delta;
+        setDeltaMovement(dirX * speed, getDeltaMovement().y, dirZ * speed);
+        move(MoverType.SELF, getDeltaMovement());
+        setDrilling(false);
 
-                        final int stage = (int) (breakProgress * 10f);
-                        level().destroyBlockProgress(getId(), ahead, Mth.clamp(stage, 0, 9));
+        if (!level().isClientSide) {
+            resetBreakProgress(false);
+            resetBreakProgress(true);
+        }
 
-                        // If the block has been broken successfully
-                        if (breakProgress >= 1.0f) {
-                            final BlockState blockState = level().getBlockState(ahead);
-                            final List<ItemStack> drops = Block.getDrops(blockState, (ServerLevel) level(), ahead, level().getBlockEntity(ahead));
+    }
 
-                            level().destroyBlock(ahead, false);
+    private void spawnParticles(final ParticleOptions particle, final int amount) {
+        final double offsetX = (random.nextDouble() * 0.5 - 0.25) * 2;
+        final double offsetY = (random.nextDouble() * 0.5 - 0.25) * 2;
+        final double offsetZ = (random.nextDouble() * 0.5 - 0.25) * 2;
+        ((ServerLevel) level()).sendParticles(particle,
+                getX(), getY() + getBbHeight() * 0.5f, getZ(), amount, offsetX, offsetY, offsetZ, 0);
+    }
 
-                            for (ItemStack drop : drops) {
-                                if (!insertItem(drop)) {
-                                    Block.popResource(level(), blockPosition(), drop);
-                                }
+    private void mineBlock(final BlockPos target, boolean upper) {
+        final BlockState state = level().getBlockState(target);
+        if (state.isAir()) {
+            if (upper) {
+                setDrillingUp(false);
+                setDrilling(false);
+                resetBreakProgress(true);
+            }
 
-                            }
+            return;
+        }
 
-                            breakProgress = 0f;
-                            breakingPos = null;
-                        }
+        BlockPos currentPos = upper ? breakingPosUpper : breakingPos;
+        float currentProgress = upper ? breakProgressUpper : breakProgress;
+
+        if (!target.equals(currentPos)) {
+            if (currentPos != null) {
+                level().destroyBlockProgress(getId() + (upper ? 1 : 0), currentPos, -1);
+            }
+
+            currentPos = target.immutable();
+            currentProgress = 0f;
+        }
+
+        float hardness = state.getDestroySpeed(level(), target);
+        if (hardness >= 0) {
+            // Replicates the speed of a stone tool (4 mining speed)
+            final boolean correctTool = !state.requiresCorrectToolForDrops();
+            final float delta = 4f / hardness / (correctTool ? 30f : 100f);
+            currentProgress += delta;
+
+            final int stage = (int) (currentProgress * 10f);
+            level().destroyBlockProgress(getId() + (upper ? 1 : 0), target, Mth.clamp(stage, 0, 9));
+
+            if (currentProgress >= 1) {
+                final List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level(), target, level().getBlockEntity(target));
+                level().destroyBlock(target, false);
+
+                for (ItemStack drop : drops) {
+                    if (!insertItem(drop)) {
+                        Block.popResource(level(), blockPosition(), drop);
                     }
 
                 }
 
+                ++this.blocksMinedCount;
+                if (blocksMinedCount >= BLOCKS_UNTIL_BROKEN) {
+                    setState(2);
+                    setDrilling(false);
+                    setDrillingUp(false);
+                    resetBreakProgress(false);
+                    resetBreakProgress(true);
+                    return;
+                }
+
+                if (upper) {
+                    setDrillingUp(false);
+                    setDrilling(false);
+                    resetBreakProgress(true);
+                }
+                else {
+                    resetBreakProgress(false);
+                    if (!level().getBlockState(target.above()).isAir()) {
+                        setDrillingUp(true);
+                        setDrilling(false);
+                        drillingPauseTicks = DRILLING_PAUSE_DURATION;
+                    }
+                    else {
+                        setDrilling(false);
+                    }
+
+                }
+
+                return;
+            }
+
+        }
+
+        if (upper) {
+            breakingPosUpper = currentPos;
+            breakProgressUpper = currentProgress;
+        }
+        else {
+            breakingPos = currentPos;
+            breakProgress = currentProgress;
+        }
+
+    }
+
+    private void resetBreakProgress(boolean upper) {
+        if (upper) {
+            if (breakingPosUpper != null) {
+                level().destroyBlockProgress(getId() + 1, breakingPosUpper, -1);
+                breakingPosUpper = null;
+                breakProgressUpper = 0f;
+            }
+
+        }
+        else {
+            if (breakingPos != null) {
+                level().destroyBlockProgress(getId(), breakingPos, -1);
+                breakingPos = null;
+                breakProgress = 0f;
             }
 
         }
@@ -273,20 +399,55 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         if (compound.contains("Inventory")) {
             ContainerHelper.loadAllItems(compound.getCompound("Inventory"), inventory);
         }
+        if (compound.contains("BlocksMined")) {
+            blocksMinedCount = compound.getInt("BlocksMined");
+        }
+        if (compound.contains("State")) {
+            setState(compound.getInt("State"));
+        }
 
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
         if (this.getOwnerUUID() != null) {
             compound.putUUID("OwnerUUID", this.getOwnerUUID());
         }
+
+        compound.putInt("BlocksMined", blocksMinedCount);
+        compound.putInt("State", getEntityData().get(STATE));
 
         compound.putInt("InventorySize", inventory.size());
         final CompoundTag inventoryTag = new CompoundTag();
         ContainerHelper.saveAllItems(inventoryTag, inventory);
         compound.put("Inventory", inventoryTag);
+    }
 
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        if (level().isClientSide) {
+            return false;
+        }
+
+        // Can only be collected by the drill's owner
+        final Entity entity = source.getEntity();
+        if (entity instanceof Player player && player.getUUID().equals(getOwnerUUID())) {
+            final ItemStack drillItem = new ItemStack(ClockworkItems.CLOCKWORK_DRILL.get());
+
+            final CompoundTag entityTag = new CompoundTag();
+            addAdditionalSaveData(entityTag);
+            drillItem.setTag(entityTag);
+
+            if (!player.getInventory().add(drillItem)) {
+                Block.popResource(level(), blockPosition(), drillItem);
+            }
+
+            discard();
+            return true;
+
+        }
+
+        return false;
     }
 
     @Override
@@ -365,7 +526,30 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             return InteractionResult.SUCCESS;
         }
 
-        setState(isActive() ? 0 : 1);
+        if (isBroken()) {
+            if (player.getItemInHand(hand).is(ClockworkItems.CLOCKWORK_GEAR.get())) {
+                player.displayClientMessage(Component.translatable("message.clockwork.broken_drill_repaired"), true);
+
+                setState(0);
+                blocksMinedCount = 0;
+
+                spawnParticles(ParticleTypes.POOF, 10);
+                playSound(SoundEvents.PLAYER_LEVELUP, 1, 1);
+
+                return InteractionResult.SUCCESS;
+            }
+
+            final int amount = ClockworkConfig.DRILL_CLOCKWORK_GEAR_AMOUNT;
+            player.displayClientMessage(Component.translatable("message.clockwork.broken_drill", amount, amount == 1 ? "" : "s"), true);
+        }
+        else {
+            setState(isActive() ? 0 : 1);
+            if (!isActive()) {
+                resetBreakProgress(true);
+                resetBreakProgress(false);
+            }
+
+        }
 
         return super.interact(player, hand);
     }
@@ -378,7 +562,6 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(new AnimationController<>(this, "controller", this::predicate));
-        controllerRegistrar.add(new AnimationController<>(this, "drillingController", this::drillingPredicate));
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
@@ -387,14 +570,6 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         }
         else {
             event.setAnimation(IDLE);
-        }
-
-        return PlayState.CONTINUE;
-    }
-
-    private <T extends GeoAnimatable> PlayState drillingPredicate(AnimationState<T> event) {
-        if (isDrilling() && isActive()) {
-            event.setAnimation(DRILL);
         }
 
         return PlayState.CONTINUE;

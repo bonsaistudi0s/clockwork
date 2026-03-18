@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.entity.renderer.BrokenDragonflyRenderer;
 import dev.xylonity.bonsai.clockwork.client.entity.renderer.DragonflyRenderer;
+import dev.xylonity.bonsai.clockwork.client.entity.renderer.ClockworkDrillRenderer;
+import dev.xylonity.bonsai.clockwork.client.particle.FlamethrowerParticle;
 import dev.xylonity.bonsai.clockwork.client.particle.PotionSprayParticle;
 import dev.xylonity.bonsai.clockwork.client.projectile.renderer.ClockworkArrowProjectileRenderer;
 import dev.xylonity.bonsai.clockwork.client.projectile.renderer.GenericProjectileRenderer;
@@ -32,13 +34,17 @@ public class ClockworkClientEvents {
 
         event.register(ClockworkEntities.CLOCKWORK_WINGS_BOOST_PROJECTILE.get(), GenericProjectileRenderer::new);
         event.register(ClockworkEntities.POTION_SPRAY_TRIGGER_PROJECTILE.get(), GenericProjectileRenderer::new);
+        event.register(ClockworkEntities.FLAMETHROWER_TRIGGER_PROJECTILE.get(), GenericProjectileRenderer::new);
 
         event.register(ClockworkEntities.CLOCKWORK_ARROW_PROJECTILE.get(), ClockworkArrowProjectileRenderer::new);
+
+        event.register(ClockworkEntities.CLOCKWORK_DRILL.get(), ClockworkDrillRenderer::new);
     }
 
     @RegisterEvent
     public static void registerParticleProviders(final ParticleProviderRegistrationEvent event) {
         event.register(ClockworkParticles.POTION_SPRAY.get(), PotionSprayParticle.Provider::new);
+        event.register(ClockworkParticles.FLAMETHROWER_PARTICLE.get(), FlamethrowerParticle.Provider::new);
     }
 
     @RegisterEvent
@@ -60,6 +66,8 @@ public class ClockworkClientEvents {
         event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_firework", "inventory"));
 
         event.register(new ModelResourceLocation(Clockwork.MOD_ID, "clockwork_potion_sprayer_2d", "inventory"));
+
+        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "clockwork_flamethrower_2d", "inventory"));
     }
 
     @RegisterEvent
