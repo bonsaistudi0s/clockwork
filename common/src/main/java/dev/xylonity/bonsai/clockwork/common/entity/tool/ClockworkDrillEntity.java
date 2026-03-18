@@ -75,6 +75,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     public float drillSpinAngle = 0f;
 
     public int blocksMinedCount = 0;
+    public int gearsToRepairCount = 0;
 
     private static final int DRILLING_PAUSE_DURATION = 7;
     private static final int BLOCKS_UNTIL_BROKEN = 128;
@@ -88,7 +89,12 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     public static boolean create(final Level level, final BlockPos blockPos, @NotNull final Player player, @Nullable CompoundTag itemTag) {
         final ClockworkDrillEntity drill = ClockworkEntities.CLOCKWORK_DRILL.get().create(level);
         if (drill != null) {
-            drill.setYRot(player.getYRot());
+            float yaw = player.getYRot();
+            if (player.isShiftKeyDown()) {
+                yaw = Math.round(yaw / 90f) * 90f;
+            }
+            drill.setYRot(yaw);
+
             drill.setOwnerUUID(player.getUUID());
 
             if (itemTag != null) {
@@ -140,6 +146,13 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             drillSpinAngle += easedSpeed * 36f * Mth.DEG_TO_RAD;
         }
 
+        if (!onGround()) {
+            setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
+        }
+        else {
+            setDeltaMovement(getDeltaMovement().x, 0, getDeltaMovement().z);
+        }
+
         // Broken particles
         if (tickCount % 10 == 0 && isBroken() && !level().isClientSide) {
             spawnParticles(ParticleTypes.LARGE_SMOKE, 1);
@@ -147,6 +160,8 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
         // Movement
         if (!isActive()) {
+            setDeltaMovement(0, getDeltaMovement().y, 0);
+            move(MoverType.SELF, getDeltaMovement());
             return;
         }
 
@@ -402,6 +417,9 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         if (compound.contains("BlocksMined")) {
             blocksMinedCount = compound.getInt("BlocksMined");
         }
+        if (compound.contains("GearsToRepair")) {
+            gearsToRepairCount = compound.getInt("GearsToRepair");
+        }
         if (compound.contains("State")) {
             setState(compound.getInt("State"));
         }
@@ -415,6 +433,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         }
 
         compound.putInt("BlocksMined", blocksMinedCount);
+        compound.putInt("GearsToRepair", gearsToRepairCount);
         compound.putInt("State", getEntityData().get(STATE));
 
         compound.putInt("InventorySize", inventory.size());
@@ -526,25 +545,44 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             return InteractionResult.SUCCESS;
         }
 
+        final int maxGearAmount = ClockworkConfig.DRILL_CLOCKWORK_GEAR_AMOUNT;
+        final ItemStack itemStack = player.getItemInHand(hand);
         if (isBroken()) {
-            if (player.getItemInHand(hand).is(ClockworkItems.CLOCKWORK_GEAR.get())) {
-                player.displayClientMessage(Component.translatable("message.clockwork.broken_drill_repaired"), true);
+            if (itemStack.is(ClockworkItems.CLOCKWORK_GEAR.get())) {
+                if (gearsToRepairCount < maxGearAmount - 1) {
+                    ++gearsToRepairCount;
+                    if (!player.getAbilities().instabuild) {
+                        itemStack.shrink(1);
+                    }
 
-                setState(0);
-                blocksMinedCount = 0;
+                }
+                else {
+                    player.displayClientMessage(Component.translatable("message.clockwork.broken_drill_repaired"), true);
 
-                spawnParticles(ParticleTypes.POOF, 10);
+                    setState(0);
+                    blocksMinedCount = 0;
+                    gearsToRepairCount = 0;
+
+                    playSound(SoundEvents.WANDERING_TRADER_REAPPEARED, 1, 1);
+                    spawnParticles(ParticleTypes.POOF, 10);
+
+                    return InteractionResult.SUCCESS;
+                }
+
+                spawnParticles(ParticleTypes.POOF, 1);
                 playSound(SoundEvents.PLAYER_LEVELUP, 1, 1);
-
-                return InteractionResult.SUCCESS;
+            }
+            else {
+                playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 1, 1);
             }
 
-            final int amount = ClockworkConfig.DRILL_CLOCKWORK_GEAR_AMOUNT;
-            player.displayClientMessage(Component.translatable("message.clockwork.broken_drill", amount, amount == 1 ? "" : "s"), true);
+            player.displayClientMessage(Component.translatable("message.clockwork.broken_drill", maxGearAmount - gearsToRepairCount, maxGearAmount == 1 ? "" : "s"), true);
         }
         else {
             setState(isActive() ? 0 : 1);
             if (!isActive()) {
+                setDrilling(false);
+                setDrillingUp(false);
                 resetBreakProgress(true);
                 resetBreakProgress(false);
             }

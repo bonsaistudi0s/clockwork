@@ -43,7 +43,7 @@ public class ClockworkEntities {
         POTION_SPRAY_TRIGGER_PROJECTILE = ENTITIES.registerEntity("potion_spray_trigger_projectile", PotionSprayTriggerProjectile::new, MobCategory.MISC, 0.6f, 0.6f, List.of(EntityType.Builder::noSummon));
         FLAMETHROWER_TRIGGER_PROJECTILE = ENTITIES.registerEntity("flamethrower_trigger_projectile", FlamethrowerTriggerProjectile::new, MobCategory.MISC, 0.6f, 0.6f, List.of(EntityType.Builder::noSummon, EntityType.Builder::fireImmune));
 
-        CLOCKWORK_DRILL = ENTITIES.registerEntity("clockwork_drill", ClockworkDrillEntity::new, MobCategory.MISC, 0.6f, 0.6f);
+        CLOCKWORK_DRILL = ENTITIES.registerEntity("clockwork_drill", ClockworkDrillEntity::new, MobCategory.MISC, 0.7f, 0.7f);
     }
 
 }
