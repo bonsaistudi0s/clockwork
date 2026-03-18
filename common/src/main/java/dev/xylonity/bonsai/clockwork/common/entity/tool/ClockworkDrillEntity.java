@@ -16,7 +16,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -48,8 +47,10 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
-    private static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation ACTIVATE = RawAnimation.begin().thenPlay("activate");
+    private static final RawAnimation DEACTIVATED = RawAnimation.begin().thenPlay("deactivated");
 
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(ClockworkDrillEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     // 0 inactive, 1 active, 2 broken
@@ -561,6 +562,8 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
                     player.displayClientMessage(Component.translatable("message.clockwork.broken_drill_repaired"), true);
 
                     setState(0);
+                    triggerAnim("activateController", "activate");
+
                     blocksMinedCount = 0;
                     gearsToRepairCount = 0;
 
@@ -601,10 +604,15 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(new AnimationController<>(this, "controller", this::predicate));
+        controllerRegistrar.add(new AnimationController<>(this, "activateController", 2,
+                animationState -> PlayState.STOP).triggerableAnim("activate", ACTIVATE));
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
-        if (isActive()) {
+        if (isBroken()) {
+            event.setAnimation(DEACTIVATED);
+        }
+        else if (isActive()) {
             event.setAnimation(WALK);
         }
         else {
