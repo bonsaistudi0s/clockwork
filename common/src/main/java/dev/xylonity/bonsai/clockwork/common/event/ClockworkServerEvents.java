@@ -49,7 +49,7 @@ public class ClockworkServerEvents {
             }
 
             player.setDeltaMovement(movement);
-            player.hasImpulse = true;
+            player.hurtMarked = true;
         }
 
     }

@@ -1,9 +1,10 @@
 package dev.xylonity.bonsai.clockwork.common.entity.tool;
 
-import dev.xylonity.bonsai.clockwork.common.menu.DrillMenu;
+import dev.xylonity.bonsai.clockwork.common.menu.ClockworkDrillMenu;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
+import dev.xylonity.knightlib.KnightLib;
 import dev.xylonity.knightlib.api.util.KnightLibEasings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -15,6 +16,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
@@ -26,6 +28,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -82,7 +85,33 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     private static final int DRILLING_PAUSE_DURATION = 7;
     private static final int BLOCKS_UNTIL_BROKEN = 128;
 
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+
+    private final ContainerData drillData = new ContainerData() {
+        @Override
+        public int get(int i) {
+            return switch (i) {
+                case 0 -> blocksMinedCount;
+                case 1 -> BLOCKS_UNTIL_BROKEN;
+                default -> 0;
+            };
+
+        }
+
+        @Override
+        public void set(int i, int i1) {
+            if (i == 0) {
+                blocksMinedCount = i1;
+            }
+
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+    };
 
     public ClockworkDrillEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -538,12 +567,20 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        return new DrillMenu(i, inventory, this);
+        return new ClockworkDrillMenu(i, inventory, this, drillData);
     }
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (level().isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (player.isShiftKeyDown() && player.getUUID().equals(getOwnerUUID())) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                KnightLib.PLATFORM.openMenu(serverPlayer, this, buf -> buf.writeInt(getId()));
+            }
+
             return InteractionResult.SUCCESS;
         }
 

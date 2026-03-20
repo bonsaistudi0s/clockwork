@@ -27,6 +27,7 @@ public class Clockwork {
         ClockworkSounds.SOUNDS.init();
         ClockworkCreativeTabs.CREATIVE_MODE_TABS.init();
         ClockworkParticles.PARTICLES.init();
+        ClockworkMenus.MENUS.init();
 
         ClockworkEntitySpawns.init();
     }
