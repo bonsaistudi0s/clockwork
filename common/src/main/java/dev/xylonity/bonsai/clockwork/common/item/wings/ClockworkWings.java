@@ -4,9 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import dev.xylonity.bonsai.clockwork.client.armor.renderer.GenericArmorItemRenderer;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoArmorItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,8 +12,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -24,6 +19,9 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
 
@@ -35,6 +33,21 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
     private static final RawAnimation CLOSE = RawAnimation.begin().thenPlay("close");
     private static final RawAnimation OPEN = RawAnimation.begin().thenPlay("open");
     private static final RawAnimation FLAP = RawAnimation.begin().thenPlay("flap");
+
+    // Client-sided animation state to prevent anims from overlapping per second (since the wings are updated per x point/s of durability lost)
+    private static final Map<Integer, WingsAnimState> ANIMATION_STATE = new HashMap<>();
+
+    public static class WingsAnimState {
+        public boolean animInit;
+        public boolean wasOnGround;
+        public boolean wasGliding;
+        public int airborneState;
+        public int landTick;
+        public int landedFrom;
+        public int closeTick;
+        public int openTick;
+        public int flapTick;
+    }
 
     public ClockworkWings(Properties properties, ArmorMaterial material, Type type) {
         super(material, type, properties);
@@ -55,6 +68,14 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
         return stack.getDamageValue() < stack.getMaxDamage() - 1;
     }
 
+    public static WingsAnimState getAnimState(int entityId) {
+        return ANIMATION_STATE.computeIfAbsent(entityId, k -> new WingsAnimState());
+    }
+
+    public static void clearAnimState(int entityId) {
+        ANIMATION_STATE.remove(entityId);
+    }
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(new AnimationController<>(this, "controller", 2, this::predicate));
@@ -63,23 +84,25 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
         final Entity rawEntity = event.getData(DataTickets.ENTITY);
         if (!(rawEntity instanceof Player player)) {
+            event.setAndContinue(CLOSED);
             return PlayState.CONTINUE;
         }
 
         final ItemStack stack = event.getData(DataTickets.ITEMSTACK);
         if (stack.isEmpty()) {
+            event.setAndContinue(CLOSED);
             return PlayState.CONTINUE;
         }
 
         final boolean isGliding = player.isFallFlying();
-        final boolean isFalling = !player.onGround() && !isGliding && player.getDeltaMovement().y < -0.5;
+        final boolean isFalling = !player.onGround() && !isGliding && player.getDeltaMovement().y < -0.75;
         final boolean isDiving = isGliding && player.getDeltaMovement().y < -0.8 && player.getXRot() > 42f;
 
-        final CompoundTag tag = stack.getOrCreateTag();
+        final WingsAnimState state = getAnimState(player.getId());
 
-        // To prevent the wings from going to the default model position for some reason on the first rendering tick
-        if (!tag.getBoolean("AnimInit")) {
-            tag.putBoolean("AnimInit", true);
+        // To prevent the wings from going to the default model position (for some reason) on the first rendering tick
+        if (!state.animInit) {
+            state.animInit = true;
             event.getController().transitionLength(0);
             event.setAndContinue(CLOSED);
             return PlayState.CONTINUE;
@@ -87,49 +110,42 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
 
         event.getController().transitionLength(2);
 
-        final boolean wasOnGround = tag.getBoolean("WasOnGround");
-        final boolean wasGliding = tag.getBoolean("WasGliding");
         final boolean onGround = player.onGround();
 
         // 1 falling, 2 gliding/diving
         if (!onGround) {
-            int airborne = tag.getInt("AirborneState");
             if (isGliding || isDiving) {
-                airborne = 2;
+                state.airborneState = 2;
             }
-            else if (isFalling && airborne < 2) {
-                airborne = 1;
+            else if (isFalling && state.airborneState < 2) {
+                state.airborneState = 1;
             }
 
-            tag.putInt("AirborneState", airborne);
         }
 
         // Landing
-        if (onGround && !wasOnGround) {
-            tag.putBoolean("WasOnGround", true);
-            tag.putInt("LandTick", player.tickCount);
-            tag.putInt("LandedFrom", tag.getInt("AirborneState"));
-            tag.putInt("AirborneState", 0);
+        if (onGround && !state.wasOnGround) {
+            state.wasOnGround = true;
+            state.landTick = player.tickCount;
+            state.landedFrom = state.airborneState;
+            state.airborneState = 0;
         }
         else if (!onGround) {
-            tag.putBoolean("WasOnGround", false);
+            state.wasOnGround = false;
         }
 
         // Glide stop (mid-air or on ground)
-        if (wasGliding && !isGliding) {
-            tag.putInt("CloseTick", player.tickCount);
+        if (state.wasGliding && !isGliding) {
+            state.closeTick = player.tickCount;
         }
 
-        if (isGliding && !wasGliding) {
-            tag.putInt("OpenTick", player.tickCount);
+        if (isGliding && !state.wasGliding) {
+            state.openTick = player.tickCount;
         }
-        tag.putBoolean("WasGliding", isGliding);
+        state.wasGliding = isGliding;
 
-        final int closeTick = tag.getInt("CloseTick");
-        final boolean playingClose = closeTick > 0 && player.tickCount - closeTick < 12;
-
-        final int flapTick = tag.getInt("FlapTick");
-        final boolean playingFlap = flapTick > 0 && player.tickCount - flapTick < 13;
+        final boolean playingClose = state.closeTick > 0 && player.tickCount - state.closeTick < 12;
+        final boolean playingFlap = state.flapTick > 0 && player.tickCount - state.flapTick < 13;
 
         if (playingClose && !isGliding) {
             event.setAnimation(CLOSE);
@@ -144,8 +160,7 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
             event.setAnimation(DIVING);
         }
         else if (isGliding) {
-            final int openTick = tag.getInt("OpenTick");
-            if (player.tickCount - openTick < 8) {
+            if (player.tickCount - state.openTick < 8) {
                 event.setAnimation(OPEN);
             }
             else {
@@ -154,9 +169,7 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
 
         }
         else {
-            final int landTick = tag.getInt("LandTick");
-            final int landedFrom = tag.getInt("LandedFrom");
-            if (landedFrom == 1 && player.tickCount - landTick < 7) {
+            if (state.landedFrom == 1 && player.tickCount - state.landTick < 7) {
                 event.setAnimation(LAND);
             }
             else {

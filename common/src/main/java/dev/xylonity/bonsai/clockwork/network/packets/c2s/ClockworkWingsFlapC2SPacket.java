@@ -26,7 +26,7 @@ public record ClockworkWingsFlapC2SPacket() {
                     PacketCodec.of(ClockworkWingsFlapC2SPacket::encode, ClockworkWingsFlapC2SPacket::decode),
                     (message, player) -> {
                         final ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-                        if (!(chest.getItem() instanceof ClockworkWings)) {
+                        if (!(chest.getItem() instanceof ClockworkWings wings)) {
                             return;
                         }
 
@@ -34,7 +34,7 @@ public record ClockworkWingsFlapC2SPacket() {
                             return;
                         }
 
-                        chest.getOrCreateTag().putInt("FlapTick", player.tickCount);
+                        ClockworkWings.getAnimState(player.getId()).flapTick = player.tickCount;
 
                         final Level level = player.level();
                         final ClockworkWingsBoostProjectile boostProjectile = ClockworkEntities.CLOCKWORK_WINGS_BOOST_PROJECTILE.get().create(level);

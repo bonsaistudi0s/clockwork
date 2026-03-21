@@ -34,22 +34,27 @@ public class ClockworkServerEvents {
     public static void onPlayerTick(final ServerPlayerTickEvent event) {
         if (event.getPhase() == TickPhase.END) {
             final Player player = event.getPlayer();
-            if (!player.isFallFlying()) {
-                return;
-            }
-
             if (!(player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ClockworkWings)) {
                 return;
             }
 
             Vec3 movement = player.getDeltaMovement();
-            movement = new Vec3(movement.x * ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_VELOCITY, movement.y, movement.z * ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_VELOCITY);
-            if (movement.y < 0.0) {
-                movement = movement.add(0.0, -ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_SINK, 0.0);
+            if (player.isFallFlying()) {
+                movement = new Vec3(movement.x * ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_VELOCITY, movement.y, movement.z * ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_VELOCITY);
+                if (movement.y < 0.0) {
+                    movement = movement.add(0.0, -ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_SINK, 0.0);
+                }
+
+                player.setDeltaMovement(movement);
+                player.hurtMarked = true;
+            }
+            else {
+                if (player.getDeltaMovement().y < -0.85) {
+                    player.setDeltaMovement(movement.add(0, 0.06, 0));
+                    player.hurtMarked = true;
+                }
             }
 
-            player.setDeltaMovement(movement);
-            player.hurtMarked = true;
         }
 
     }
