@@ -2,7 +2,6 @@ package dev.xylonity.bonsai.clockwork.client.projectile.model;
 
 import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.common.entity.projectile.ClockworkArrowProjectile;
-import dev.xylonity.knightlib.common.entity.BaseProjectile;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 

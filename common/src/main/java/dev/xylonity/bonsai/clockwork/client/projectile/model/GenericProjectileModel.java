@@ -1,24 +1,24 @@
 package dev.xylonity.bonsai.clockwork.client.projectile.model;
 
 import dev.xylonity.bonsai.clockwork.Clockwork;
-import dev.xylonity.knightlib.common.entity.BaseProjectile;
+import dev.xylonity.knightlib.common.entity.AbstractProjectile;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
-public class GenericProjectileModel extends GeoModel<BaseProjectile> {
+public class GenericProjectileModel<T extends AbstractProjectile> extends GeoModel<T> {
 
     @Override
-    public ResourceLocation getModelResource(BaseProjectile baseProjectile) {
+    public ResourceLocation getModelResource(AbstractProjectile baseProjectile) {
         return new ResourceLocation(Clockwork.MOD_ID, "geo/generic.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(BaseProjectile baseProjectile) {
+    public ResourceLocation getTextureResource(AbstractProjectile baseProjectile) {
         return new ResourceLocation(Clockwork.MOD_ID, "textures/entity/generic.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(BaseProjectile baseProjectile) {
+    public ResourceLocation getAnimationResource(AbstractProjectile baseProjectile) {
         return new ResourceLocation(Clockwork.MOD_ID, "animations/generic.animation.json");
     }
 
