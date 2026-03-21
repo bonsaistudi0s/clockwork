@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -30,7 +31,7 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
     private static final RawAnimation GLIDING = RawAnimation.begin().thenPlay("gliding");
     private static final RawAnimation FALLING = RawAnimation.begin().thenPlay("falling");
     private static final RawAnimation LAND = RawAnimation.begin().thenPlay("land");
-    private static final RawAnimation CLOSE = RawAnimation.begin().thenPlay("close");
+    private static final RawAnimation CLOSE = RawAnimation.begin().thenPlay("close").thenLoop("closed");
     private static final RawAnimation OPEN = RawAnimation.begin().thenPlay("open");
     private static final RawAnimation FLAP = RawAnimation.begin().thenPlay("flap");
 
@@ -38,7 +39,6 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
     private static final Map<Integer, WingsAnimState> ANIMATION_STATE = new HashMap<>();
 
     public static class WingsAnimState {
-        public boolean animInit;
         public boolean wasOnGround;
         public boolean wasGliding;
         public int airborneState;
@@ -47,6 +47,7 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
         public int closeTick;
         public int openTick;
         public int flapTick;
+        public boolean equipped;
     }
 
     public ClockworkWings(Properties properties, ArmorMaterial material, Type type) {
@@ -72,13 +73,32 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
         return ANIMATION_STATE.computeIfAbsent(entityId, k -> new WingsAnimState());
     }
 
-    public static void clearAnimState(int entityId) {
-        ANIMATION_STATE.remove(entityId);
-    }
-
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(new AnimationController<>(this, "controller", 2, this::predicate));
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (level.isClientSide && entity instanceof Player player) {
+            final boolean isEquipped = player.getItemBySlot(EquipmentSlot.CHEST) == stack;
+            final WingsAnimState state = getAnimState(player.getId());
+
+            // Trying to solve the animation bug (at the first tick) triggered by the singleton instance
+            if (isEquipped && !state.equipped) {
+                state.closeTick = 0;
+                state.openTick = 0;
+                state.flapTick = 0;
+                state.landTick = 0;
+                state.airborneState = 0;
+                state.landedFrom = 0;
+                state.wasGliding = false;
+                state.wasOnGround = player.onGround();
+            }
+
+            state.equipped = isEquipped;
+        }
+
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
@@ -96,19 +116,9 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
 
         final boolean isGliding = player.isFallFlying();
         final boolean isFalling = !player.onGround() && !isGliding && player.getDeltaMovement().y < -0.75;
-        final boolean isDiving = isGliding && player.getDeltaMovement().y < -0.8 && player.getXRot() > 42f;
+        final boolean isDiving = isGliding && player.getDeltaMovement().y < -1.1 && player.getXRot() > 42f;
 
         final WingsAnimState state = getAnimState(player.getId());
-
-        // To prevent the wings from going to the default model position (for some reason) on the first rendering tick
-        if (!state.animInit) {
-            state.animInit = true;
-            event.getController().transitionLength(0);
-            event.setAndContinue(CLOSED);
-            return PlayState.CONTINUE;
-        }
-
-        event.getController().transitionLength(2);
 
         final boolean onGround = player.onGround();
 

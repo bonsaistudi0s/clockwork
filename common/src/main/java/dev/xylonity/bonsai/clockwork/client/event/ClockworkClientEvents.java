@@ -123,7 +123,7 @@ public class ClockworkClientEvents {
             }
 
             flapCooldown = ClockworkConfig.CLOCKWORK_WINGS_BOOST_COOLDOWN_TICKS;
-            chest.getOrCreateTag().putInt("FlapTick", event.getPlayer().tickCount);
+            ClockworkWings.getAnimState(event.getPlayer().getId()).flapTick = event.getPlayer().tickCount;
             Clockwork.NETWORK.sendToServer(new ClockworkWingsFlapC2SPacket());
         }
 

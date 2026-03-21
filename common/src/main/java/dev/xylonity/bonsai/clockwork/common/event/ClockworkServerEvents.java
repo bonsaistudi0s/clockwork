@@ -10,6 +10,9 @@ import dev.xylonity.knightlib.api.event.impl.interop.TickPhase;
 import dev.xylonity.knightlib.api.event.impl.server.EntityAttributeRegistrationEvent;
 import dev.xylonity.knightlib.api.event.impl.server.ServerPlayerTickEvent;
 import dev.xylonity.knightlib.api.event.impl.server.SpawnPlacementRegistrationEvent;
+import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Animal;
@@ -50,8 +53,7 @@ public class ClockworkServerEvents {
             }
             else {
                 if (player.getDeltaMovement().y < -0.85) {
-                    player.setDeltaMovement(movement.add(0, 0.06, 0));
-                    player.hurtMarked = true;
+                    player.fallDistance = Math.max(0, player.fallDistance - 0.3f);
                 }
             }
 

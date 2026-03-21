@@ -9,11 +9,9 @@ import dev.xylonity.knightlib.network.PacketType;
 import dev.xylonity.knightlib.network.ServerboundPacketType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib.animatable.GeoItem;
 
 public record ClockworkWingsFlapC2SPacket() {
 
@@ -26,7 +24,7 @@ public record ClockworkWingsFlapC2SPacket() {
                     PacketCodec.of(ClockworkWingsFlapC2SPacket::encode, ClockworkWingsFlapC2SPacket::decode),
                     (message, player) -> {
                         final ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-                        if (!(chest.getItem() instanceof ClockworkWings wings)) {
+                        if (!(chest.getItem() instanceof ClockworkWings)) {
                             return;
                         }
 
@@ -34,12 +32,11 @@ public record ClockworkWingsFlapC2SPacket() {
                             return;
                         }
 
-                        ClockworkWings.getAnimState(player.getId()).flapTick = player.tickCount;
-
                         final Level level = player.level();
                         final ClockworkWingsBoostProjectile boostProjectile = ClockworkEntities.CLOCKWORK_WINGS_BOOST_PROJECTILE.get().create(level);
                         if (boostProjectile != null) {
                             boostProjectile.setAttachedEntityUUID(player.getUUID());
+                            boostProjectile.setPos(player.position());
                             level.addFreshEntity(boostProjectile);
                         }
 
