@@ -1,12 +1,12 @@
 package dev.xylonity.bonsai.clockwork.common.entity.passive;
 
+import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.common.entity.PassiveClockworkEntity;
-import dev.xylonity.bonsai.clockwork.client.sound.Sounds;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
-import dev.xylonity.bonsai.clockwork.network.packets.DragonflyAscendKeyC2SPacket;
+import dev.xylonity.bonsai.clockwork.network.packets.c2s.DragonflyAscendKeyC2SPacket;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
-import dev.xylonity.knightlib.api.network.Network;
+import dev.xylonity.knightlib.api.sound.persistent.KnightLibPersistentSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -122,9 +122,14 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
             }
 
         }
+        else {
+            if (getState() == 1) {
+                KnightLibPersistentSounds.tick(this, "fly");
+            }
+            else {
+                KnightLibPersistentSounds.tick(this, "idle");
+            }
 
-        if (level().isClientSide) {
-            Sounds.proxy().tickSounds(this);
         }
 
     }
@@ -137,7 +142,7 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     @Override
     public void remove(RemovalReason reason) {
         if (level().isClientSide) {
-            Sounds.proxy().stopAllFor(this);
+            KnightLibPersistentSounds.stopAll(this);
         }
 
         super.remove(reason);
@@ -302,7 +307,7 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
             this.setDeltaMovement(getDeltaMovement().x, getDeltaMovement().y + 0.25, getDeltaMovement().z);
 
             // For some reason travel is only executed in the client when there is a passenger present, so another packet is sent to reassign the synched data
-            Network.sendToServer(new DragonflyAscendKeyC2SPacket(false));
+            Clockwork.NETWORK.sendToServer(new DragonflyAscendKeyC2SPacket(false));
         }
 
     }
