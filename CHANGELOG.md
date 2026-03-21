@@ -1,8 +1,15 @@
 # 1.1.0
 - Improved the smoothness of weapon sway, making it much more natural, especially when changing vertical speed (when jumping or descending)
 - Complete refactoring of the code, making it much more maintainable in the long run
-- Fixed a bug where potions with modified duration by the potion sprayer were not applied correctly and instead used the original applicable duration
+- A new item has been added, the Clockwork Drill, a small tool capable of mining in a straight line towards wherever it is pointed. It has an inventory for the items it collects, can be picked up, and when it breaks after a certain amount of use, it can be repaired with clockwork gears
+- A new item has been added, the Clockwork Flamethrower, which sets fire to whatever is in front of it. It is loaded with 1 unit of blaze powder, which provides 60 seconds of active use
+- The Clockwork Wings have been completely redesigned. The model, animations and textures have been updated. Now, when falling whilst wearing the wings, fall damage reduction is applied, and now the boost increases the player’s horizontal and vertical speed when activated
 - Optimised internal functional architecture of the potion sprayer, reducing the overall load on the client when using it
+- Now the clockwork arrow goes to find the target as soon as it is fired, rather than when it is near the entity
+- The Potion Sprayer now adds time to existing effects, rather than applying a fixed duration of 3 seconds
+- Fixed a bug where potions with modified duration by the potion sprayer were not applied correctly and instead used the original applicable duration
 - Fixed a bug where using the potion sprayer in the left hand would not display particles but would consume potion time
 - Fixed a bug where the direction of potion sprayer particles on a dedicated server would become out of sync with the player's direction
 - Fixed a bug where the potion sprayer particles turned grey when emptying the active potion
+- Fixed a bug where the sway in the left hand was calculated in the opposite direction
+- Fixed a bug where the clockwork wing boost wouldn't work on certain cases
