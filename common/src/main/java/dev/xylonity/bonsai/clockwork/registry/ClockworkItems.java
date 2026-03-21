@@ -8,6 +8,7 @@ import dev.xylonity.bonsai.clockwork.common.item.drill.ClockworkDrillItem;
 import dev.xylonity.bonsai.clockwork.common.item.flamethrower.FlamethrowerItem;
 import dev.xylonity.bonsai.clockwork.common.item.sprayer.PotionSprayer;
 import dev.xylonity.bonsai.clockwork.common.item.wings.ClockworkWings;
+import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.knightlib.api.registrar.ResourceDispatcher;
 import dev.xylonity.knightlib.api.registrar.ResourceEntry;
 import dev.xylonity.knightlib.api.registrar.ResourceRegistry;
@@ -29,7 +30,7 @@ public class ClockworkItems {
 
     public static final ResourceEntry<Item> CLOCKWORK_POTION_SPRAYER = ITEMS.register("clockwork_potion_sprayer", () -> new PotionSprayer(new Item.Properties().stacksTo(1)));
     public static final ResourceEntry<Item> CLOCKWORK_FLAMETHROWER = ITEMS.register("clockwork_flamethrower", () -> new FlamethrowerItem(new Item.Properties().stacksTo(1)));
-    public static final ResourceEntry<Item> CLOCKWORK_WINGS = ITEMS.register("clockwork_wings", () -> new ClockworkWings(new Item.Properties().stacksTo(1), ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE));
+    public static final ResourceEntry<Item> CLOCKWORK_WINGS = ITEMS.register("clockwork_wings", () -> new ClockworkWings(new Item.Properties().stacksTo(1).durability(ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_DURABILITY), ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE));
 
     public static final ResourceEntry<Item> CLOCKWORK_DRILL = ITEMS.register("clockwork_drill", () -> new ClockworkDrillItem(new Item.Properties().stacksTo(1)));
 

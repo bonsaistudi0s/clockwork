@@ -43,6 +43,8 @@ public record ClockworkWingsFlapC2SPacket() {
                             level.addFreshEntity(boostProjectile);
                         }
 
+                        chest.hurtAndBreak(5, player,
+                                livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST));
                     }
 
             );
