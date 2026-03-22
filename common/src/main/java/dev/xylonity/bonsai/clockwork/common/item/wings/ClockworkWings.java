@@ -2,8 +2,10 @@ package dev.xylonity.bonsai.clockwork.common.item.wings;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.armor.renderer.GenericArmorItemRenderer;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoArmorItem;
+import dev.xylonity.bonsai.clockwork.network.packets.c2s.ClockworkWingsSoundC2SPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -147,10 +149,12 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
         // Glide stop (mid-air or on ground)
         if (state.wasGliding && !isGliding) {
             state.closeTick = player.tickCount;
+            Clockwork.NETWORK.sendToServer(new ClockworkWingsSoundC2SPacket(0));
         }
 
         if (isGliding && !state.wasGliding) {
             state.openTick = player.tickCount;
+            Clockwork.NETWORK.sendToServer(new ClockworkWingsSoundC2SPacket(1));
         }
         state.wasGliding = isGliding;
 

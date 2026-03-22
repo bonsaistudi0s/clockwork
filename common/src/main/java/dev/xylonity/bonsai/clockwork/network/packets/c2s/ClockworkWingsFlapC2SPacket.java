@@ -4,11 +4,13 @@ import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.common.entity.projectile.ClockworkWingsBoostProjectile;
 import dev.xylonity.bonsai.clockwork.common.item.wings.ClockworkWings;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import dev.xylonity.knightlib.network.PacketCodec;
 import dev.xylonity.knightlib.network.PacketType;
 import dev.xylonity.knightlib.network.ServerboundPacketType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,6 +41,8 @@ public record ClockworkWingsFlapC2SPacket() {
                             boostProjectile.setPos(player.position());
                             level.addFreshEntity(boostProjectile);
                         }
+
+                        player.level().playSound(null, player.blockPosition(), ClockworkSounds.CLOCKWORK_WINGS_FLAP.get(), SoundSource.MASTER, 1, 1);
 
                         chest.hurtAndBreak(5, player,
                                 livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST));
