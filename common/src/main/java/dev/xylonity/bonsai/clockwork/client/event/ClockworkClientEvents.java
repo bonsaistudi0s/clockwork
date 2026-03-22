@@ -9,9 +9,11 @@ import dev.xylonity.bonsai.clockwork.client.particle.PotionSprayParticle;
 import dev.xylonity.bonsai.clockwork.client.projectile.renderer.ClockworkArrowProjectileRenderer;
 import dev.xylonity.bonsai.clockwork.client.projectile.renderer.GenericProjectileRenderer;
 import dev.xylonity.bonsai.clockwork.client.screen.ClockworkDrillScreen;
+import dev.xylonity.bonsai.clockwork.common.entity.passive.DragonflyEntity;
 import dev.xylonity.bonsai.clockwork.common.item.wings.ClockworkWings;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.network.packets.c2s.ClockworkWingsFlapC2SPacket;
+import dev.xylonity.bonsai.clockwork.network.packets.c2s.DragonflyAscendKeyC2SPacket;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkMenus;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkParticles;
@@ -20,6 +22,7 @@ import dev.xylonity.knightlib.api.event.impl.client.*;
 import dev.xylonity.knightlib.api.event.impl.interop.TickPhase;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class ClockworkClientEvents {
@@ -78,12 +81,7 @@ public class ClockworkClientEvents {
     }
 
     @RegisterEvent
-    public static void onKeyInput(final ClientKeyInputEvent event) {
-
-    }
-
-    @RegisterEvent
-    public static void onClientTick(final ClientPlayerTickEvent event) {
+    public static void onClientPlayerTick(final ClientPlayerTickEvent event) {
         if (event.getPhase() == TickPhase.END) {
             if (event.getClient().level == null) {
                 return;
@@ -125,6 +123,27 @@ public class ClockworkClientEvents {
             flapCooldown = ClockworkConfig.CLOCKWORK_WINGS_BOOST_COOLDOWN_TICKS;
             ClockworkWings.getAnimState(event.getPlayer().getId()).flapTick = event.getPlayer().tickCount;
             Clockwork.NETWORK.sendToServer(new ClockworkWingsFlapC2SPacket());
+        }
+
+    }
+
+    @RegisterEvent
+    public static void onClientTick(final ClientTickEvent event) {
+        if (event.getPhase() == TickPhase.END) {
+            if (event.getClient().screen != null) {
+                return;
+            }
+
+            final Player player = event.getClient().player;
+            if (player != null) {
+                if (player.getVehicle() instanceof DragonflyEntity entity && entity.getControllingPassenger() == player) {
+                    if (event.getClient().options.keyJump.isDown()) {
+                        Clockwork.NETWORK.sendToServer(new DragonflyAscendKeyC2SPacket(true));
+                    }
+                }
+
+            }
+
         }
 
     }
