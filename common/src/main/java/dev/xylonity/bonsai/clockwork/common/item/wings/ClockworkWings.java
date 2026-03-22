@@ -83,7 +83,8 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (level.isClientSide && entity instanceof Player player) {
-            final boolean isEquipped = player.getItemBySlot(EquipmentSlot.CHEST) == stack;
+            final boolean isEquipped = player.getItemBySlot(EquipmentSlot.CHEST).getItem() == stack.getItem()
+                    && player.getItemBySlot(EquipmentSlot.CHEST).getCount() == stack.getCount();
             final WingsAnimState state = getAnimState(player.getId());
 
             // Trying to solve the animation bug (at the first tick) triggered by the singleton instance
