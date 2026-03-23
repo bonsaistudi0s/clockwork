@@ -103,9 +103,9 @@ public class ClientSwayUtil {
         final float targetRoll = rawYaw * HEAD_ROLL_FACTOR * sensitivity;
 
         // Smooth towards targets
-        smoothYaw = exponentialDecay(smoothYaw, targetYaw, HEAD_SMOOTH_FACTOR);
-        smoothPitch = exponentialDecay(smoothPitch, targetPitch, HEAD_SMOOTH_FACTOR);
-        smoothRoll = exponentialDecay(smoothRoll, targetRoll, HEAD_SMOOTH_FACTOR);
+        smoothYaw = ClientUtil.exponentialDecay(smoothYaw, targetYaw, HEAD_SMOOTH_FACTOR);
+        smoothPitch = ClientUtil.exponentialDecay(smoothPitch, targetPitch, HEAD_SMOOTH_FACTOR);
+        smoothRoll = ClientUtil.exponentialDecay(smoothRoll, targetRoll, HEAD_SMOOTH_FACTOR);
 
         pose.mulPose(Axis.YP.rotationDegrees(smoothYaw));
         pose.mulPose(Axis.XP.rotationDegrees(smoothPitch));
@@ -122,7 +122,7 @@ public class ClientSwayUtil {
         final float rawBob = Mth.lerp(partialTick, player.oBob, player.bob);
 
         // Smoothing the bob intensity so start/stop transitions are gradual
-        smoothBobIntensity = exponentialDecay(smoothBobIntensity, rawBob, BOB_SMOOTH_FACTOR);
+        smoothBobIntensity = ClientUtil.exponentialDecay(smoothBobIntensity, rawBob, BOB_SMOOTH_FACTOR);
 
         final float bobScale = player.isSprinting() ? BOB_SCALE_SPRINT : BOB_SCALE_WALK;
         final float bob = smoothBobIntensity;
@@ -165,15 +165,11 @@ public class ClientSwayUtil {
             }
 
             final float smoothRate = player.onGround() ? FALL_SMOOTH_GROUND : FALL_SMOOTH_AIR;
-            fallSway = exponentialDecay(fallSway, target, smoothRate);
+            fallSway = ClientUtil.exponentialDecay(fallSway, target, smoothRate);
         }
 
         final float interpolated = Mth.lerp(partialTick, prevFallSway, fallSway);
         pose.mulPose(Axis.XP.rotationDegrees(interpolated));
-    }
-
-    private float exponentialDecay(float current, float target, float factor) {
-        return current + (target - current) * factor;
     }
 
     private boolean isFirstPerson(ItemDisplayContext context) {
