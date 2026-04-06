@@ -28,10 +28,10 @@ public abstract class CrossbowItemMixin {
            }
 
            final int[] ticks = new int[] {
-                   Math.round(0.5f * 20f),
-                   Math.round(0.46f * 20f),
-                   Math.round(0.42f * 20f),
-                   Math.round(0.38f * 20f)
+                   Math.round(0.25f * 20f),
+                   Math.round(0.21f * 20f),
+                   Math.round(0.18f * 20f),
+                   Math.round(0.14f * 20f)
            };
 
            cir.setReturnValue(ticks[index]);
