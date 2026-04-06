@@ -29,7 +29,7 @@ public class ClockworkItems {
     public static final ResourceEntry<Item> SCOPE_CROSSBOW = ITEMS.register("scope_crossbow", () -> new ScopeCrossbow(new Item.Properties().stacksTo(1)));
 
     public static final ResourceEntry<Item> CLOCKWORK_POTION_SPRAYER = ITEMS.register("clockwork_potion_sprayer", () -> new PotionSprayer(new Item.Properties().stacksTo(1)));
-    public static final ResourceEntry<Item> CLOCKWORK_FLAMETHROWER = ITEMS.register("clockwork_flamethrower", () -> new FlamethrowerItem(new Item.Properties().stacksTo(1)));
+    public static final ResourceEntry<Item> CLOCKWORK_FLAMETHROWER = ITEMS.register("clockwork_flamethrower", () -> new FlamethrowerItem(new Item.Properties().stacksTo(1).durability(ClockworkConfig.FLAMETHROWER_DEFAULT_DURABILITY)));
     public static final ResourceEntry<Item> CLOCKWORK_WINGS = ITEMS.register("clockwork_wings", () -> new ClockworkWings(new Item.Properties().stacksTo(1).durability(ClockworkConfig.CLOCKWORK_WINGS_DEFAULT_DURABILITY), ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE));
 
     public static final ResourceEntry<Item> CLOCKWORK_DRILL = ITEMS.register("clockwork_drill", () -> new ClockworkDrillItem(new Item.Properties().stacksTo(1)));
