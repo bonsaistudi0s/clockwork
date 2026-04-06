@@ -121,9 +121,9 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         final ClockworkDrillEntity drill = ClockworkEntities.CLOCKWORK_DRILL.get().create(level);
         if (drill != null) {
             float yaw = player.getYRot();
-            if (player.isShiftKeyDown()) {
-                yaw = Math.round(yaw / 90f) * 90f;
-            }
+            //if (player.isShiftKeyDown()) {
+            yaw = Math.round(yaw / 90f) * 90f;
+            //}
             drill.setYRot(yaw);
 
             drill.setOwnerUUID(player.getUUID());
@@ -237,6 +237,23 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             return;
         }
 
+        // Stops if there is a cliff in front
+        if (
+                level().getBlockState(ahead.below()).isAir() &&
+                level().getBlockState(ahead.below().below()).isAir() &&
+                level().getBlockState(ahead.below().below().below()).isAir()
+        ) {
+            setState(0);
+            setDrilling(false);
+            setDrillingUp(false);
+            if (!level().isClientSide) {
+                resetBreakProgress(false);
+                resetBreakProgress(true);
+            }
+
+            return;
+        }
+
         setDeltaMovement(dirX * speed, getDeltaMovement().y, dirZ * speed);
         move(MoverType.SELF, getDeltaMovement());
         setDrilling(false);
@@ -280,7 +297,17 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             currentProgress = 0f;
         }
 
+        // Stops if the block in front is unbreakable
         float hardness = state.getDestroySpeed(level(), target);
+        if (hardness < 0) {
+            setState(0);
+            setDrilling(false);
+            setDrillingUp(false);
+            resetBreakProgress(false);
+            resetBreakProgress(true);
+            return;
+        }
+
         if (hardness >= 0) {
             // Replicates the speed of a stone tool (4 mining speed)
             final boolean correctTool = !state.requiresCorrectToolForDrops();
@@ -649,7 +676,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         if (isBroken()) {
             event.setAnimation(DEACTIVATED);
         }
-        else if (isActive()) {
+        else if (isActive() && !isDrilling() && !isDrillingUp()) {
             event.setAnimation(WALK);
         }
         else {
