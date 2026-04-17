@@ -196,5 +196,40 @@
         "name": "clockwork:clockwork_arrow_hit_ground_4"
       }
     ]
+  },
+  "drill_break": {
+    "sounds": [
+      {
+        "name": "clockwork:drill_break"
+      }
+    ]
+  },
+  "drill_loop": {
+    "sounds": [
+      {
+        "name": "clockwork:drill_loop"
+      }
+    ]
+  },
+  "drill_repair": {
+    "sounds": [
+      {
+        "name": "clockwork:drill_repair"
+      }
+    ]
+  },
+  "drill_walk_loop": {
+    "sounds": [
+      {
+        "name": "clockwork:drill_walk_loop"
+      }
+    ]
+  },
+  "flamethrower_loop": {
+    "sounds": [
+      {
+        "name": "clockwork:flamethrower_loop"
+      }
+    ]
   }
 }

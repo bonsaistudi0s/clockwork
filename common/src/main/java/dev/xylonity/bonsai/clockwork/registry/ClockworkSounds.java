@@ -12,25 +12,32 @@ public class ClockworkSounds {
 
     public static final ResourceRegistry<SoundEvent> SOUNDS = ResourceDispatcher.create(BuiltInRegistries.SOUND_EVENT, Clockwork.MOD_ID);
 
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_CLOSE = SOUNDS.register("clockwork_wings_close", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_wings_close")));
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_FLAP = SOUNDS.register("clockwork_wings_flap", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_wings_flap")));
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_OPEN = SOUNDS.register("clockwork_wings_open", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_wings_open")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_CLOSE = SOUNDS.register("clockwork_wings_close", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_wings_close")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_FLAP = SOUNDS.register("clockwork_wings_flap", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_wings_flap")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_WINGS_OPEN = SOUNDS.register("clockwork_wings_open", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_wings_open")));
 
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_ARROW_HIT_GROUND = SOUNDS.register("clockwork_arrow_hit_ground", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_arrow_hit_ground")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_ARROW_HIT_GROUND = SOUNDS.register("clockwork_arrow_hit_ground", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_arrow_hit_ground")));
 
-    public static final ResourceEntry<SoundEvent> DRAGONFLY_FLY = SOUNDS.register("dragonfly_fly_loop", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_fly_loop")));
-    public static final ResourceEntry<SoundEvent> DRAGONFLY_HURT = SOUNDS.register("dragonfly_hurt", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_hurt")));
-    public static final ResourceEntry<SoundEvent> DRAGONFLY_IDLE = SOUNDS.register("dragonfly_idle_loop", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_idle_loop")));
+    public static final ResourceEntry<SoundEvent> DRAGONFLY_FLY = SOUNDS.register("dragonfly_fly_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("dragonfly_fly_loop")));
+    public static final ResourceEntry<SoundEvent> DRAGONFLY_HURT = SOUNDS.register("dragonfly_hurt", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("dragonfly_hurt")));
+    public static final ResourceEntry<SoundEvent> DRAGONFLY_IDLE = SOUNDS.register("dragonfly_idle_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("dragonfly_idle_loop")));
 
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_BARREL_CROSSBOW_LOADING = SOUNDS.register("clockwork_barrel_crossbow_loading", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_barrel_crossbow_loading")));
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_SCOPE_CROSSBOW_LOADING = SOUNDS.register("clockwork_crossbow_loading", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_crossbow_loading")));
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_CROSSBOW_LOADING_END = SOUNDS.register("clockwork_crossbow_loading_end", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_crossbow_loading_end")));
-    public static final ResourceEntry<SoundEvent> CLOCKWORK_CROSSBOW_SHOOT = SOUNDS.register("clockwork_crossbow_shoot", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "clockwork_crossbow_shoot")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_BARREL_CROSSBOW_LOADING = SOUNDS.register("clockwork_barrel_crossbow_loading", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_barrel_crossbow_loading")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_SCOPE_CROSSBOW_LOADING = SOUNDS.register("clockwork_crossbow_loading", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_crossbow_loading")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_CROSSBOW_LOADING_END = SOUNDS.register("clockwork_crossbow_loading_end", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_crossbow_loading_end")));
+    public static final ResourceEntry<SoundEvent> CLOCKWORK_CROSSBOW_SHOOT = SOUNDS.register("clockwork_crossbow_shoot", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("clockwork_crossbow_shoot")));
 
-    public static final ResourceEntry<SoundEvent> SPRAYER_END = SOUNDS.register("sprayer_end", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "sprayer_end")));
-    public static final ResourceEntry<SoundEvent> SPRAYER_LOOP = SOUNDS.register("sprayer_loop", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "sprayer_loop")));
-    public static final ResourceEntry<SoundEvent> SPRAYER_START = SOUNDS.register("sprayer_start", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "sprayer_start")));
+    public static final ResourceEntry<SoundEvent> SPRAYER_END = SOUNDS.register("sprayer_end", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("sprayer_end")));
+    public static final ResourceEntry<SoundEvent> SPRAYER_LOOP = SOUNDS.register("sprayer_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("sprayer_loop")));
+    public static final ResourceEntry<SoundEvent> SPRAYER_START = SOUNDS.register("sprayer_start", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("sprayer_start")));
 
-    public static final ResourceEntry<SoundEvent> DRAGONFLY_GEAR = SOUNDS.register("dragonfly_gear", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Clockwork.MOD_ID, "dragonfly_gear")));
+    public static final ResourceEntry<SoundEvent> DRILL_BREAK = SOUNDS.register("drill_break", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_break")));
+    public static final ResourceEntry<SoundEvent> DRILL_LOOP = SOUNDS.register("drill_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_loop")));
+    public static final ResourceEntry<SoundEvent> DRILL_WALK_LOOP = SOUNDS.register("drill_walk_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_walk_loop")));
+    public static final ResourceEntry<SoundEvent> DRILL_REPAIR = SOUNDS.register("drill_repair", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_repair")));
+
+    public static final ResourceEntry<SoundEvent> FLAMETHROWER_LOOP = SOUNDS.register("flamethrower_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("flamethrower_loop")));
+
+    public static final ResourceEntry<SoundEvent> DRAGONFLY_GEAR = SOUNDS.register("dragonfly_gear", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("dragonfly_gear")));
 
 }
