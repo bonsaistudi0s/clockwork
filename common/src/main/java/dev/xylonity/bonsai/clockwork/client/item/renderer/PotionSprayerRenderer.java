@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.item.model.PotionSprayerModel;
-import dev.xylonity.bonsai.clockwork.client.layer.PotionSprayerLiquidTintLayer;
+import dev.xylonity.bonsai.clockwork.client.item.layer.PotionSprayerLiquidTintLayer;
 import dev.xylonity.bonsai.clockwork.client.util.ClientSwayUtil;
 import dev.xylonity.bonsai.clockwork.client.util.ClientUtil;
 import dev.xylonity.bonsai.clockwork.common.item.sprayer.PotionSprayer;
@@ -21,7 +21,6 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class PotionSprayerRenderer extends GeoItemRenderer<PotionSprayer> {
 

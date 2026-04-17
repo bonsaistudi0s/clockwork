@@ -1,4 +1,4 @@
-package dev.xylonity.bonsai.clockwork.client.layer;
+package dev.xylonity.bonsai.clockwork.client.item.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
