@@ -6,6 +6,7 @@ import dev.xylonity.bonsai.clockwork.common.entity.projectile.trigger.PotionSpra
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoItem;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
+import dev.xylonity.knightlib.api.sound.persistent.KnightLibPersistentSounds;
 import dev.xylonity.knightlib.api.util.KnightLibUtil;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -97,6 +98,10 @@ public class PotionSprayer extends GeckoItem {
     @Override
     public void onUseTick(final Level level, final @NotNull LivingEntity livingEntity, final @NotNull ItemStack itemStack, int remainingUseDuration) {
         if (level.isClientSide) {
+            if (livingEntity instanceof Player player) {
+                KnightLibPersistentSounds.tick(player, "clockwork:spray");
+            }
+
             return;
         }
         if (!(livingEntity instanceof Player player)) {

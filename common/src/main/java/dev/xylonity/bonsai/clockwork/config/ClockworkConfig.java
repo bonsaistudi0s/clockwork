@@ -80,6 +80,13 @@ public final class ClockworkConfig {
     public static int DRILL_CLOCKWORK_GEAR_AMOUNT = 1;
 
     @ConfigEntry(
+            category = "Clockwork Drill",
+            comment = "Number of blocks mined until the drill breaks",
+            min = 1, max = 10000
+    )
+    public static int DRILL_BLOCKS_UNTIL_BROKEN = 128;
+
+    @ConfigEntry(
             category = "Clockwork Flamethrower",
             comment = "Default durability",
             min = 0, max = 100000

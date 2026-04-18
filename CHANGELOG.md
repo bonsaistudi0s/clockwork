@@ -8,6 +8,7 @@
 - Now the clockwork arrow goes to find the target as soon as it is fired, rather than when it is near the entity
 - The Potion Sprayer now adds time to existing effects, rather than applying a fixed duration of 3 seconds
 - Increased firing speed of the crossbow barrel
+- Decreased the idle sound of the clockwork dragonfly
 - Fixed a bug where potions with modified duration by the potion sprayer were not applied correctly and instead used the original applicable duration
 - Fixed a bug where using the potion sprayer in the left hand would not display particles but would consume potion time
 - Fixed a bug where the direction of potion sprayer particles on a dedicated server would become out of sync with the player's direction

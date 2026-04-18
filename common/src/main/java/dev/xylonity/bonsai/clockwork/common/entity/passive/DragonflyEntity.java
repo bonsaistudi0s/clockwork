@@ -124,10 +124,10 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
         }
         else {
             if (getState() == 1) {
-                KnightLibPersistentSounds.tick(this, "fly");
+                KnightLibPersistentSounds.tick(this, "clockwork:fly");
             }
             else {
-                KnightLibPersistentSounds.tick(this, "idle");
+                KnightLibPersistentSounds.tick(this, "clockwork:idle");
             }
 
         }

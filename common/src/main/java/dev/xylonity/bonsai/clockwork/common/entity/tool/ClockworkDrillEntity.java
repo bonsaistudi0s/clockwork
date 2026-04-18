@@ -4,7 +4,9 @@ import dev.xylonity.bonsai.clockwork.common.menu.ClockworkDrillMenu;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
+import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import dev.xylonity.knightlib.KnightLib;
+import dev.xylonity.knightlib.api.sound.persistent.KnightLibPersistentSounds;
 import dev.xylonity.knightlib.api.util.KnightLibEasings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -18,6 +20,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -83,7 +86,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     public int gearsToRepairCount = 0;
 
     private static final int DRILLING_PAUSE_DURATION = 7;
-    private static final int BLOCKS_UNTIL_BROKEN = 128;
+    private static final int BLOCKS_UNTIL_BROKEN = ClockworkConfig.DRILL_BLOCKS_UNTIL_BROKEN;
 
     private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
@@ -156,6 +159,13 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         super.tick();
 
         if (level().isClientSide) {
+            if (isActive() && !isDrilling() && !isDrillingUp()) {
+                KnightLibPersistentSounds.tick(this, "clockwork:drill_walk_loop");
+            }
+            else if (isDrilling() || isDrillingUp()) {
+                KnightLibPersistentSounds.tick(this, "clockwork:drill_loop");
+            }
+
             setYHeadRot(Mth.approachDegrees(getYHeadRot(), getYRot(), 12.0f));
             prevDrillTilt = drillTilt;
             if (isDrillingUp()) {
@@ -335,6 +345,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
                     setDrillingUp(false);
                     resetBreakProgress(false);
                     resetBreakProgress(true);
+                    level().playSound(null, blockPosition(), ClockworkSounds.DRILL_BREAK.get(), SoundSource.NEUTRAL);
                     return;
                 }
 
@@ -628,10 +639,11 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
                     setState(0);
                     triggerAnim("activateController", "activate");
 
+                    level().playSound(null, blockPosition(), ClockworkSounds.DRILL_REPAIR.get(), SoundSource.NEUTRAL);
+
                     blocksMinedCount = 0;
                     gearsToRepairCount = 0;
 
-                    playSound(SoundEvents.WANDERING_TRADER_REAPPEARED, 1, 1);
                     spawnParticles(ParticleTypes.POOF, 10);
 
                     return InteractionResult.SUCCESS;
