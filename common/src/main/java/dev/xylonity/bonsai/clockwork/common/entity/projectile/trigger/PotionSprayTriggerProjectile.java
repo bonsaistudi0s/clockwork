@@ -4,9 +4,11 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -76,13 +78,11 @@ public class PotionSprayTriggerProjectile extends GenericTriggerProjectile {
     }
 
     private List<MobEffectInstance> computeAdjustedEffects(ItemStack stack) {
-        final List<MobEffectInstance> originalEffects = PotionUtils.getMobEffects(stack);
+        final List<MobEffectInstance> originalEffects = new ArrayList<>();
+        stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getAllEffects().forEach(originalEffects::add);
         final List<MobEffectInstance> newEffects = new ArrayList<>(originalEffects.size());
 
-        int effectsLeft = 0;
-        if (stack.hasTag()) {
-            effectsLeft = stack.getTag().getInt(NBT_SPRAY_TICKS);
-        }
+        final int effectsLeft = StackNbt.tag(stack).getInt(NBT_SPRAY_TICKS);
 
         if (effectsLeft > 0) {
             int baseMax = 0;

@@ -1,9 +1,10 @@
 package dev.xylonity.bonsai.clockwork.mixin;
 
 import dev.xylonity.bonsai.clockwork.common.item.crossbow.BarrelCrossbow;
+import dev.xylonity.bonsai.clockwork.common.util.EnchantmentsUtil;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,9 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class CrossbowItemMixin {
 
    @Inject(method = "getChargeDuration", at = @At("HEAD"), cancellable = true)
-   private static void clockwork$barrelCustomCharge(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
+   private static void clockwork$barrelCustomCharge(ItemStack stack, LivingEntity entity, CallbackInfoReturnable<Integer> cir) {
        if (stack.getItem() instanceof BarrelCrossbow) {
-           int index = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.QUICK_CHARGE, stack);
+           int index = EnchantmentsUtil.level(stack, Enchantments.QUICK_CHARGE);
            if (index < 0) {
                index = 0;
            }

@@ -4,29 +4,32 @@ import dev.xylonity.bonsai.clockwork.client.item.renderer.PotionSprayerRenderer;
 import dev.xylonity.bonsai.clockwork.client.particle.PotionSprayParticleData;
 import dev.xylonity.bonsai.clockwork.common.entity.projectile.trigger.PotionSprayTriggerProjectile;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoItem;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.knightlib.api.sound.persistent.KnightLibPersistentSounds;
 import dev.xylonity.knightlib.api.util.KnightLibUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +61,7 @@ public class PotionSprayer extends GeckoItem {
     }
 
     @Override
-    public int getUseDuration(final @NotNull ItemStack stack) {
+    public int getUseDuration(final @NotNull ItemStack stack, final @NotNull LivingEntity entity) {
         return 72000;
     }
 
@@ -173,12 +176,18 @@ public class PotionSprayer extends GeckoItem {
     }
 
     private static boolean hasInstantEffect(final ItemStack stack) {
-        return PotionUtils.getMobEffects(stack).stream().anyMatch(mobEffectInstance -> mobEffectInstance.getEffect().isInstantenous());
+        return potionEffects(stack).stream().anyMatch(mobEffectInstance -> mobEffectInstance.getEffect().value().isInstantenous());
+    }
+
+    private static List<MobEffectInstance> potionEffects(final ItemStack stack) {
+        final List<MobEffectInstance> effects = new ArrayList<>();
+        stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getAllEffects().forEach(effects::add);
+        return effects;
     }
 
     public static int getMaxEffectDuration(final ItemStack potion) {
         int max = 0;
-        for (MobEffectInstance effect : PotionUtils.getMobEffects(potion)) {
+        for (MobEffectInstance effect : potionEffects(potion)) {
             max = Math.max(max, effect.getDuration());
         }
 
@@ -186,19 +195,19 @@ public class PotionSprayer extends GeckoItem {
     }
 
     public static int getSprayTicks(final ItemStack potion) {
-        return potion.getOrCreateTag().getInt(NBT_SPRAY_TICKS);
+        return StackNbt.tag(potion).getInt(NBT_SPRAY_TICKS);
     }
 
     public static int getOriginalMax(final ItemStack potion) {
-        return potion.getOrCreateTag().getInt(NBT_ORIGINAL_MAX);
+        return StackNbt.tag(potion).getInt(NBT_ORIGINAL_MAX);
     }
 
     private static void setSprayTicks(final ItemStack potion, int ticks) {
-        potion.getOrCreateTag().putInt(NBT_SPRAY_TICKS, Math.max(0, ticks));
+        StackNbt.update(potion, tag -> tag.putInt(NBT_SPRAY_TICKS, Math.max(0, ticks)));
     }
 
     private static boolean hasSprayTracking(final ItemStack potion) {
-        return potion.hasTag() && potion.getTag().contains(NBT_SPRAY_TICKS);
+        return StackNbt.contains(potion, NBT_SPRAY_TICKS);
     }
 
     private static int initSprayTracking(final ItemStack potion) {
@@ -207,26 +216,26 @@ public class PotionSprayer extends GeckoItem {
             return 0;
         }
 
-        potion.getOrCreateTag().putInt(NBT_ORIGINAL_MAX, maxDuration);
+        StackNbt.update(potion, tag -> tag.putInt(NBT_ORIGINAL_MAX, maxDuration));
         setSprayTicks(potion, maxDuration);
 
         return maxDuration;
     }
 
     public static boolean isSpraying(final ItemStack sprayer) {
-        return sprayer.hasTag() && sprayer.getTag().getBoolean(NBT_SPRAYING);
+        return StackNbt.tag(sprayer).getBoolean(NBT_SPRAYING);
     }
 
     private static void setSpraying(final ItemStack sprayer, boolean value) {
-        sprayer.getOrCreateTag().putBoolean(NBT_SPRAYING, value);
+        StackNbt.update(sprayer, tag -> tag.putBoolean(NBT_SPRAYING, value));
     }
 
     private static int getUseTicks(final ItemStack sprayer) {
-        return sprayer.getOrCreateTag().getInt(NBT_USE_TICKS);
+        return StackNbt.tag(sprayer).getInt(NBT_USE_TICKS);
     }
 
     private static void setUseTicks(final ItemStack sprayer, int ticks) {
-        sprayer.getOrCreateTag().putInt(NBT_USE_TICKS, ticks);
+        StackNbt.update(sprayer, tag -> tag.putInt(NBT_USE_TICKS, ticks));
     }
 
     public static List<MobEffectInstance> scaleEffectsBySprayRemaining(final ItemStack potionStack, List<MobEffectInstance> originalEffects) {
@@ -299,7 +308,7 @@ public class PotionSprayer extends GeckoItem {
 
         // Base velocity aligned with the player's look direction
         final Vec3 velocity = playerLookAngle.scale(0.3225);
-        final int color = PotionUtils.getColor(potion);
+        final int color = potion.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor();
 
         level.sendParticles(
                 new PotionSprayParticleData((float) velocity.x, (float) velocity.y, (float) velocity.z, color),
@@ -329,7 +338,7 @@ public class PotionSprayer extends GeckoItem {
         setUseTicks(sprayer, ticks);
 
         if (ticks % DURABILITY_INTERVAL == 0 && !player.getAbilities().instabuild) {
-            sprayer.hurtAndBreak(1, player, playerEntity -> playerEntity.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+            sprayer.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }
     }
 

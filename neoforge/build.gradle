@@ -42,3 +42,8 @@ neoForge {
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    implementation("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
+    implementation("dev.xylonity.knightlib:knightlib-neoforge-${minecraft_version}:${knightlib_version}")
+}

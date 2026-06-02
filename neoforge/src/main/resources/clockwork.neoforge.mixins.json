@@ -8,9 +8,6 @@
     "PlayerGlideMixin"
   ],
   "client": [
-    "GeckoArmorItemMixin",
-    "GeckoCrossbowItemMixin",
-    "GeckoItemMixin",
     "LocalPlayerGlideMixin"
   ],
   "server": [],

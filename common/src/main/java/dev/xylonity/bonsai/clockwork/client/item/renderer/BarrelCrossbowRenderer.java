@@ -13,10 +13,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
@@ -55,8 +57,8 @@ public class BarrelCrossbowRenderer extends GeoItemRenderer<BarrelCrossbow> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack, BarrelCrossbow animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+    public void preRender(PoseStack poseStack, BarrelCrossbow animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
         swayUtil.applyFirstPersonSway(poseStack, lastTransform, partialTick);
     }
 
@@ -74,11 +76,11 @@ public class BarrelCrossbowRenderer extends GeoItemRenderer<BarrelCrossbow> {
 
     private BakedModel getStaticModel(ItemStack stack, Minecraft minecraft) {
         final String modelName = resolveModelName(stack, minecraft.player);
-        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(Clockwork.MOD_ID, modelName, "inventory");
+        ModelResourceLocation modelResourceLocation = ClientUtil.extraItemModel(modelName);
         BakedModel bakedModel = minecraft.getModelManager().getModel(modelResourceLocation);
 
         if (bakedModel == minecraft.getModelManager().getMissingModel()) {
-            modelResourceLocation = new ModelResourceLocation(Clockwork.MOD_ID, MODEL_STANDBY, "inventory");
+            modelResourceLocation = ClientUtil.extraItemModel(MODEL_STANDBY);
             bakedModel = minecraft.getModelManager().getModel(modelResourceLocation);
         }
 
@@ -97,10 +99,11 @@ public class BarrelCrossbowRenderer extends GeoItemRenderer<BarrelCrossbow> {
     }
 
     private String modelForLoadedProjectile(ItemStack stack) {
-        if (CrossbowItem.containsChargedProjectile(stack, Items.FIREWORK_ROCKET)) {
+        final ChargedProjectiles charged = stack.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
+        if (charged.contains(Items.FIREWORK_ROCKET)) {
             return MODEL_FIREWORK;
         }
-        if (CrossbowItem.containsChargedProjectile(stack, ClockworkItems.CLOCKWORK_ARROW.get())) {
+        if (charged.contains(ClockworkItems.CLOCKWORK_ARROW.get())) {
             return MODEL_CLOCKWORK_ARROW;
         }
 

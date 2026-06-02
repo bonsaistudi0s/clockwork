@@ -32,9 +32,9 @@ public class ClockworkWingsBoostProjectile extends AbstractProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TARGET_ENTITY_UUID, Optional.empty());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TARGET_ENTITY_UUID, Optional.empty());
     }
 
     public Optional<UUID> getAttachedEntityUUID() {

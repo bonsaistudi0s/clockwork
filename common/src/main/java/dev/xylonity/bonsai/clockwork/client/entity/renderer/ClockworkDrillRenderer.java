@@ -16,9 +16,9 @@ public class ClockworkDrillRenderer extends GeoEntityRenderer<ClockworkDrillEnti
     }
 
     @Override
-    protected void applyRotations(ClockworkDrillEntity animatable, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick) {
+    protected void applyRotations(ClockworkDrillEntity animatable, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick, float nativeScale) {
         poseStack.mulPose(Axis.YP.rotationDegrees(-Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot())));
-        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick);
+        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
     }
 
 }

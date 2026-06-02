@@ -20,7 +20,6 @@ import dev.xylonity.bonsai.clockwork.registry.ClockworkParticles;
 import dev.xylonity.knightlib.api.event.RegisterEvent;
 import dev.xylonity.knightlib.api.event.impl.client.*;
 import dev.xylonity.knightlib.api.event.impl.interop.TickPhase;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -59,25 +58,25 @@ public class ClockworkClientEvents {
 
     @RegisterEvent
     public static void registerAdditionalModels(final AdditionalModelsRegistrationEvent event) {
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_standby", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_pulling_0", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_pulling_1", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_pulling_2", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_arrow", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_clockworkarrow", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "barrel_crossbow_firework", "inventory"));
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_standby");
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_pulling_0");
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_pulling_1");
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_pulling_2");
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_arrow");
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_clockworkarrow");
+        event.registerItemModel(Clockwork.MOD_ID, "barrel_crossbow_firework");
 
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_standby", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_pulling_0", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_pulling_1", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_pulling_2", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_arrow", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_clockworkarrow", "inventory"));
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "scope_crossbow_firework", "inventory"));
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_standby");
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_pulling_0");
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_pulling_1");
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_pulling_2");
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_arrow");
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_clockworkarrow");
+        event.registerItemModel(Clockwork.MOD_ID, "scope_crossbow_firework");
 
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "clockwork_potion_sprayer_2d", "inventory"));
+        event.registerItemModel(Clockwork.MOD_ID, "clockwork_potion_sprayer_2d");
 
-        event.register(new ModelResourceLocation(Clockwork.MOD_ID, "clockwork_flamethrower_2d", "inventory"));
+        event.registerItemModel(Clockwork.MOD_ID, "clockwork_flamethrower_2d");
     }
 
     @RegisterEvent

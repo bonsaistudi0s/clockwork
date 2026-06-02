@@ -14,8 +14,7 @@ public interface CustomGlider {
             int next = flightTicks + 1;
             if (next % 10 == 0) {
                 if (next % 20 == 0) {
-                    stack.hurtAndBreak(1, entity,
-                            livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST));
+                    stack.hurtAndBreak(1, entity, EquipmentSlot.CHEST);
                 }
 
                 entity.gameEvent(GameEvent.ELYTRA_GLIDE);

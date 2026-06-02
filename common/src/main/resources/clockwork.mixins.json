@@ -3,13 +3,11 @@
   "minVersion": "0.8",
   "package": "dev.xylonity.bonsai.clockwork.mixin",
   "refmap": "${mod_id}.refmap.json",
-  "compatibilityLevel": "JAVA_18",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CrossbowItemAccessor",
     "CrossbowItemMixin",
     "PlayerMixin",
-    "PotionItemMixin",
-    "PotionUtilsMixin"
+    "PotionItemMixin"
   ],
   "client": [
     "ItemInHandRendererMixin",

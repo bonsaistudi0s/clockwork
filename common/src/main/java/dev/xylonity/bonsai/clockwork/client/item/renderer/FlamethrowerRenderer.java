@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
@@ -47,8 +46,8 @@ public class FlamethrowerRenderer extends GeoItemRenderer<FlamethrowerItem> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack, FlamethrowerItem animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+    public void preRender(PoseStack poseStack, FlamethrowerItem animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
         swayUtil.applyFirstPersonSway(poseStack, lastTransform, partialTick);
     }
 
@@ -58,7 +57,7 @@ public class FlamethrowerRenderer extends GeoItemRenderer<FlamethrowerItem> {
         pose.pushPose();
         ClientUtil.applyStaticTransform(ctx, pose);
 
-        final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(Clockwork.MOD_ID, "clockwork_flamethrower_2d", "inventory");
+        final ModelResourceLocation modelResourceLocation = ClientUtil.extraItemModel("clockwork_flamethrower_2d");
         minecraft.getItemRenderer().render(stack, ctx, false, pose, buf, light, overlay, minecraft.getModelManager().getModel(modelResourceLocation));
 
         pose.popPose();

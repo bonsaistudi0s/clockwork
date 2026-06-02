@@ -33,7 +33,7 @@ public class FlamethrowerTriggerProjectile extends GenericTriggerProjectile {
                     continue;
                 }
 
-                entity.setSecondsOnFire(level().random.nextInt(7) + 1);
+                entity.igniteForSeconds(level().random.nextInt(7) + 1);
             }
 
             // Places fire on block contact and then discards

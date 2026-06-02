@@ -10,6 +10,7 @@ import dev.xylonity.knightlib.api.sound.persistent.KnightLibPersistentSounds;
 import dev.xylonity.knightlib.api.util.KnightLibEasings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -33,16 +34,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
@@ -147,11 +149,11 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     }
 
     @Override
-    public void defineSynchedData() {
-        this.getEntityData().define(DATA_OWNERUUID_ID, Optional.empty());
-        this.getEntityData().define(STATE, 0);
-        this.getEntityData().define(DRILLING, false);
-        this.getEntityData().define(DRILLING_UP, false);
+    public void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DATA_OWNERUUID_ID, Optional.empty());
+        builder.define(STATE, 0);
+        builder.define(DRILLING, false);
+        builder.define(DRILLING_UP, false);
     }
 
     @Override
@@ -413,7 +415,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
         // Tries to stack the given item inside the inventory
         for (final ItemStack slot : inventory) {
-            if (!slot.isEmpty() && ItemStack.isSameItemSameTags(slot, toInsert)) {
+            if (!slot.isEmpty() && ItemStack.isSameItemSameComponents(slot, toInsert)) {
                 final int space = slot.getMaxStackSize() - slot.getCount();
                 if (space > 0) {
                     final int transfer = Math.min(space, toInsert.getCount());
@@ -484,7 +486,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             inventory = NonNullList.withSize(compound.getInt("InventorySize"), ItemStack.EMPTY);
         }
         if (compound.contains("Inventory")) {
-            ContainerHelper.loadAllItems(compound.getCompound("Inventory"), inventory);
+            ContainerHelper.loadAllItems(compound.getCompound("Inventory"), inventory, this.registryAccess());
         }
         if (compound.contains("BlocksMined")) {
             blocksMinedCount = compound.getInt("BlocksMined");
@@ -510,7 +512,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
         compound.putInt("InventorySize", inventory.size());
         final CompoundTag inventoryTag = new CompoundTag();
-        ContainerHelper.saveAllItems(inventoryTag, inventory);
+        ContainerHelper.saveAllItems(inventoryTag, inventory, this.registryAccess());
         compound.put("Inventory", inventoryTag);
     }
 
@@ -527,7 +529,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
             final CompoundTag entityTag = new CompoundTag();
             addAdditionalSaveData(entityTag);
-            drillItem.setTag(entityTag);
+            drillItem.set(DataComponents.CUSTOM_DATA, CustomData.of(entityTag));
 
             if (!player.getInventory().add(drillItem)) {
                 Block.popResource(level(), blockPosition(), drillItem);

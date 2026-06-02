@@ -1,6 +1,7 @@
 package dev.xylonity.bonsai.clockwork.common.item.drill;
 
 import dev.xylonity.bonsai.clockwork.common.entity.tool.ClockworkDrillEntity;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +28,7 @@ public class ClockworkDrillItem extends Item {
         final Player player = context.getPlayer();
         if (player != null) {
             final ItemStack stack = context.getItemInHand();
-            final CompoundTag itemTag = stack.getTag();
+            final CompoundTag itemTag = StackNbt.has(stack) ? StackNbt.tag(stack) : null;
 
             final boolean hasSpawned = ClockworkDrillEntity.create(level, context.getClickedPos(), player, itemTag);
             if (hasSpawned) {

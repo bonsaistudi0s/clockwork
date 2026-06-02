@@ -13,11 +13,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
@@ -64,25 +65,22 @@ public class PotionSprayerRenderer extends GeoItemRenderer<PotionSprayer> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack, PotionSprayer animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+    public void preRender(PoseStack poseStack, PotionSprayer animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
         swayUtil.applyFirstPersonSway(poseStack, lastTransform, partialTick);
         updateLiquidBones(model);
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, PotionSprayer animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderRecursively(PoseStack poseStack, PotionSprayer animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
         if (isLiquidBone(bone) && !bone.isHidden()) {
-            final float r = ((potionColor >> 16) & 0xFF) / 255f;
-            final float g = ((potionColor >> 8) & 0xFF) / 255f;
-            final float b = (potionColor & 0xFF) / 255f;
-
-            super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, r, g, b, alpha);
+            final int tinted = (colour & 0xFF000000) | (potionColor & 0x00FFFFFF);
+            super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, tinted);
 
             return;
         }
 
-        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 
     private void updateLiquidBones(BakedGeoModel model) {
@@ -103,7 +101,7 @@ public class PotionSprayerRenderer extends GeoItemRenderer<PotionSprayer> {
         final PotionSprayer.PotionSlot slot = (player != null) ? PotionSprayer.findFirstPotion(player) : null;
         final boolean hasPotion = slot != null;
 
-        potionColor = hasPotion ? PotionUtils.getColor(slot.stack()) : 0xFFFFFF;
+        potionColor = hasPotion ? slot.stack().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).getColor() : 0xFFFFFF;
 
         applyFillToBone(model, BONE_LIQUID_1, hasPotion ? fill1 : 0f, LIQUID_1_HALF_HEIGHT);
         applyFillToBone(model, BONE_LIQUID_2, hasPotion ? fill2 : 0f, LIQUID_2_HALF_HEIGHT);
@@ -154,7 +152,7 @@ public class PotionSprayerRenderer extends GeoItemRenderer<PotionSprayer> {
         pose.pushPose();
         ClientUtil.applyStaticTransform(ctx, pose);
 
-        final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(Clockwork.MOD_ID, MODEL_2D, "inventory");
+        final ModelResourceLocation modelResourceLocation = ClientUtil.extraItemModel(MODEL_2D);
         minecraft.getItemRenderer().render(stack, ctx, false, pose, buf, light, overlay, minecraft.getModelManager().getModel(modelResourceLocation));
 
         pose.popPose();

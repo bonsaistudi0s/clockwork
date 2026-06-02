@@ -18,10 +18,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Comparator;
@@ -49,7 +49,7 @@ public class ClockworkArrowProjectile extends AbstractArrow implements GeoEntity
     }
 
     public ClockworkArrowProjectile(Level level, LivingEntity shooter) {
-        super(ClockworkEntities.CLOCKWORK_ARROW_PROJECTILE.get(), shooter, level);
+        super(ClockworkEntities.CLOCKWORK_ARROW_PROJECTILE.get(), shooter, level, new ItemStack(ClockworkItems.CLOCKWORK_ARROW.get()), null);
         setSoundEvent(ClockworkSounds.CLOCKWORK_ARROW_HIT_GROUND.get());
     }
 
@@ -154,9 +154,9 @@ public class ClockworkArrowProjectile extends AbstractArrow implements GeoEntity
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TARGET_UUID, Optional.empty());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TARGET_UUID, Optional.empty());
     }
 
     @Override
@@ -177,7 +177,7 @@ public class ClockworkArrowProjectile extends AbstractArrow implements GeoEntity
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected @NotNull ItemStack getDefaultPickupItem() {
         return new ItemStack(ClockworkItems.CLOCKWORK_ARROW.get());
     }
 

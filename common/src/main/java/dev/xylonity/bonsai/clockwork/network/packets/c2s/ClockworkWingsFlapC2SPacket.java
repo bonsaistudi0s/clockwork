@@ -44,8 +44,7 @@ public record ClockworkWingsFlapC2SPacket() {
 
                         player.level().playSound(null, player.blockPosition(), ClockworkSounds.CLOCKWORK_WINGS_FLAP.get(), SoundSource.MASTER, 1, 1);
 
-                        chest.hurtAndBreak(5, player,
-                                livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST));
+                        chest.hurtAndBreak(5, player, EquipmentSlot.CHEST);
                     }
 
             );

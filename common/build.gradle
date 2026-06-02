@@ -22,7 +22,7 @@ dependencies {
     compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
 
-    compileOnly ("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+    compileOnly ("software.bernie.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}")
     implementation "dev.xylonity.knightlib:knightlib-common-${minecraft_version}:${knightlib_version}"
 }
 

@@ -4,24 +4,26 @@ import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.item.renderer.BarrelCrossbowRenderer;
 import dev.xylonity.bonsai.clockwork.common.item.crossbow.arrow.BarrelCrossbowProjectiles;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoCrossbowItem;
+import dev.xylonity.bonsai.clockwork.common.util.EnchantmentsUtil;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.function.Predicate;
 
@@ -69,7 +71,7 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
     }
 
     public static int getQuickChargeLevel(ItemStack stack) {
-        final int raw = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.QUICK_CHARGE, stack);
+        final int raw = EnchantmentsUtil.level(stack, net.minecraft.world.item.enchantment.Enchantments.QUICK_CHARGE);
         return clampVariant(Math.max(0, raw));
     }
 
@@ -82,7 +84,8 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
     }
 
     public static float baseVelocityFor(ItemStack stack) {
-        return containsChargedProjectile(stack, Items.FIREWORK_ROCKET) ? FIREWORK_VELOCITY : ARROW_VELOCITY;
+        final boolean hasFirework = stack.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY).contains(Items.FIREWORK_ROCKET);
+        return hasFirework ? FIREWORK_VELOCITY : ARROW_VELOCITY;
     }
 
     public static boolean hasLoadableAmmo(LivingEntity shooter, ItemStack crossbow) {
@@ -95,19 +98,19 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
     }
 
     public static Phase getPhase(ItemStack stack) {
-        return Phase.fromId(stack.getOrCreateTag().getInt(NBT_ANIM_PHASE));
+        return Phase.fromId(StackNbt.tag(stack).getInt(NBT_ANIM_PHASE));
     }
 
     private static void setPhase(ItemStack stack, Phase phase) {
-        stack.getOrCreateTag().putInt(NBT_ANIM_PHASE, phase.id());
+        StackNbt.update(stack, tag -> tag.putInt(NBT_ANIM_PHASE, phase.id()));
     }
 
     private static long getNextActionTick(ItemStack stack) {
-        return stack.getOrCreateTag().getLong(NBT_NEXT_ACTION_TICK);
+        return StackNbt.tag(stack).getLong(NBT_NEXT_ACTION_TICK);
     }
 
     private static void setNextActionTick(ItemStack stack, long tick) {
-        stack.getOrCreateTag().putLong(NBT_NEXT_ACTION_TICK, tick);
+        StackNbt.update(stack, tag -> tag.putLong(NBT_NEXT_ACTION_TICK, tick));
     }
 
     private static boolean isActionDue(ItemStack stack, long now) {
@@ -115,7 +118,7 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
     }
 
     public static float getLoadProgress(ItemStack stack, long currentTick) {
-        final CompoundTag tag = stack.getOrCreateTag();
+        final CompoundTag tag = StackNbt.tag(stack);
         if (!tag.contains(NBT_LOAD_START_TICK)) {
             return 0f;
         }
@@ -126,45 +129,43 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
     }
 
     public static int getLoadVariant(ItemStack stack) {
-        return clampVariant(stack.getOrCreateTag().getInt(NBT_LOAD_VARIANT));
+        return clampVariant(StackNbt.tag(stack).getInt(NBT_LOAD_VARIANT));
     }
 
     public static int getBarrelSpins(ItemStack stack) {
-        return stack.getOrCreateTag().getInt(NBT_BARREL_SPINS);
+        return StackNbt.tag(stack).getInt(NBT_BARREL_SPINS);
     }
 
     private static void incrementBarrelSpins(ItemStack stack) {
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt(NBT_BARREL_SPINS, tag.getInt(NBT_BARREL_SPINS) + 1);
+        StackNbt.update(stack, tag -> tag.putInt(NBT_BARREL_SPINS, tag.getInt(NBT_BARREL_SPINS) + 1));
     }
 
     private static void resetBarrelSpins(ItemStack stack) {
-        if (stack.hasTag()) {
-            stack.getOrCreateTag().remove(NBT_BARREL_SPINS);
-        }
-
+        StackNbt.remove(stack, NBT_BARREL_SPINS);
     }
 
     private static void beginLoad(ItemStack stack, long tick, int quickChargeLevel) {
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.putLong(NBT_LOAD_START_TICK, tick);
-        tag.putInt(NBT_LOAD_VARIANT, clampVariant(quickChargeLevel));
-        tag.putBoolean(NBT_LOAD_PLAYED, false);
+        StackNbt.update(stack, tag -> {
+            tag.putLong(NBT_LOAD_START_TICK, tick);
+            tag.putInt(NBT_LOAD_VARIANT, clampVariant(quickChargeLevel));
+            tag.putBoolean(NBT_LOAD_PLAYED, false);
+        });
     }
 
     private static void clearLoadFlags(ItemStack stack) {
-        if (!stack.hasTag()) {
+        if (!StackNbt.has(stack)) {
             return;
         }
 
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.remove(NBT_LOAD_START_TICK);
-        tag.remove(NBT_LOAD_VARIANT);
-        tag.remove(NBT_LOAD_PLAYED);
+        StackNbt.update(stack, tag -> {
+            tag.remove(NBT_LOAD_START_TICK);
+            tag.remove(NBT_LOAD_VARIANT);
+            tag.remove(NBT_LOAD_PLAYED);
+        });
     }
 
     private static void setCanLoad(ItemStack stack, boolean canLoad) {
-        stack.getOrCreateTag().putBoolean(NBT_CAN_LOAD, canLoad);
+        StackNbt.update(stack, tag -> tag.putBoolean(NBT_CAN_LOAD, canLoad));
     }
 
     @Override
@@ -173,7 +174,7 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 
@@ -307,7 +308,7 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
 
         incrementBarrelSpins(stack);
 
-        setCharged(stack, false);
+        stack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
         clearLoadFlags(stack);
         setPhase(stack, Phase.SHOOTING);
         setNextActionTick(stack, level.getGameTime() + SHOOT_RECOVERY_TICKS);
@@ -319,7 +320,6 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
         }
 
         if (BarrelCrossbowProjectiles.tryLoad(entity, stack)) {
-            setCharged(stack, true);
             level.playSound(null, entity.blockPosition(), ClockworkSounds.CLOCKWORK_CROSSBOW_LOADING_END.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
             return true;
         }
@@ -386,13 +386,12 @@ public class BarrelCrossbow extends GeckoCrossbowItem {
         }
 
         if (phase == Phase.LOADING) {
-            final CompoundTag tag = stack.getOrCreateTag();
-            if (!tag.getBoolean(NBT_LOAD_PLAYED)) {
+            if (!StackNbt.tag(stack).getBoolean(NBT_LOAD_PLAYED)) {
                 final int variant = getLoadVariant(stack);
                 final float durationSec = chargeDurationTicks(variant) / 20f;
                 event.getController().setAnimationSpeed(1.0f / Math.max(0.001f, durationSec));
                 event.setAndContinue(ANIM_LOAD_VARIANTS[variant]);
-                tag.putBoolean(NBT_LOAD_PLAYED, true);
+                StackNbt.update(stack, tag -> tag.putBoolean(NBT_LOAD_PLAYED, true));
             }
 
             return PlayState.CONTINUE;

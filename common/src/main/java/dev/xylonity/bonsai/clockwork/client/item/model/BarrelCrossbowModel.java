@@ -3,18 +3,20 @@ package dev.xylonity.bonsai.clockwork.client.item.model;
 import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.util.ClientUtil;
 import dev.xylonity.bonsai.clockwork.common.item.crossbow.BarrelCrossbow;
-import dev.xylonity.bonsai.clockwork.mixin.CrossbowItemAccessor;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.knightlib.api.util.KnightLibEasings;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.List;
@@ -40,7 +42,7 @@ public class BarrelCrossbowModel extends GeoModel<BarrelCrossbow> {
 
         ItemStack projectileToLoad = null;
         if (CrossbowItem.isCharged(stack)) {
-            List<ItemStack> projectiles = CrossbowItemAccessor.clockwork$getChargedProjectiles(stack);
+            List<ItemStack> projectiles = stack.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY).getItems();
             if (!projectiles.isEmpty()) {
                 projectileToLoad = projectiles.get(0);
             }
@@ -80,7 +82,7 @@ public class BarrelCrossbowModel extends GeoModel<BarrelCrossbow> {
             return;
         }
 
-        final CoreGeoBone barrel = this.getAnimationProcessor().getBone("barrel");
+        final GeoBone barrel = this.getAnimationProcessor().getBone("barrel");
         if (barrel == null) return;
 
         final BarrelCrossbow.Phase phase = BarrelCrossbow.getPhase(stack);
@@ -96,7 +98,7 @@ public class BarrelCrossbowModel extends GeoModel<BarrelCrossbow> {
             }
 
             final long now = minecraft.player.level().getGameTime();
-            final long start = stack.getOrCreateTag().getLong(BarrelCrossbow.NBT_LOAD_START_TICK);
+            final long start = StackNbt.tag(stack).getLong(BarrelCrossbow.NBT_LOAD_START_TICK);
             final int duration = BarrelCrossbow.getChargeDurationTicks(stack);
 
             float progress = (now + partialTick - start) / (float) duration;

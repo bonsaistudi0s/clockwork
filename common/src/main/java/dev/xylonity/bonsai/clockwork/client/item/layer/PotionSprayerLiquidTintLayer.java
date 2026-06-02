@@ -28,23 +28,22 @@ public class PotionSprayerLiquidTintLayer extends GeoRenderLayer<PotionSprayer> 
         final RenderType liquidType = RenderType.entityTranslucent(LIQUID_TEXTURE);
         final VertexConsumer liquidBuffer = bufferSource.getBuffer(liquidType);
 
-        float r = ((potionSprayerRenderer.getPotionColor() >> 16) & 0xFF) / 255f;
-        float g = ((potionSprayerRenderer.getPotionColor() >> 8) & 0xFF) / 255f;
-        float b = (potionSprayerRenderer.getPotionColor() & 0xFF) / 255f;
+        final int colour = 0xFF000000 | (potionSprayerRenderer.getPotionColor() & 0x00FFFFFF);
 
-        for (GeoBone topBone : bakedModel.topLevelBones()) {
-            renderLiquidRecursive(poseStack, animatable, topBone, liquidType, bufferSource, liquidBuffer, partialTick, packedLight, packedOverlay, r, g, b);
+        for (final GeoBone topBone : bakedModel.topLevelBones()) {
+            renderLiquidRecursive(poseStack, animatable, topBone, liquidType, bufferSource, liquidBuffer, partialTick, packedLight, packedOverlay, colour);
         }
+
     }
 
-    private void renderLiquidRecursive(PoseStack poseStack, PotionSprayer animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay, float r, float g, float b) {
+    private void renderLiquidRecursive(PoseStack poseStack, PotionSprayer animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay, int colour) {
         if (isLiquidBone(bone) && !bone.isHidden()) {
-            getRenderer().renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, false, partialTick, packedLight, packedOverlay, r, g, b, 1.0f);
+            getRenderer().renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, false, partialTick, packedLight, packedOverlay, colour);
             return;
         }
 
         for (GeoBone child : bone.getChildBones()) {
-            renderLiquidRecursive(poseStack, animatable, child, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay, r, g, b);
+            renderLiquidRecursive(poseStack, animatable, child, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay, colour);
         }
 
     }

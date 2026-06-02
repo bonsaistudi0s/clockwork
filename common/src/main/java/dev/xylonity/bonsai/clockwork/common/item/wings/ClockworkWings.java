@@ -1,7 +1,5 @@
 package dev.xylonity.bonsai.clockwork.common.item.wings;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.armor.renderer.GenericArmorItemRenderer;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoArmorItem;
@@ -9,19 +7,19 @@ import dev.xylonity.bonsai.clockwork.network.packets.c2s.ClockworkWingsSoundC2SP
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +50,7 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
         public boolean equipped;
     }
 
-    public ClockworkWings(Properties properties, ArmorMaterial material, Type type) {
+    public ClockworkWings(Properties properties, Holder<ArmorMaterial> material, Type type) {
         super(material, type, properties);
     }
 
@@ -62,8 +60,8 @@ public class ClockworkWings extends GeckoArmorItem implements CustomGlider {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-        return ImmutableMultimap.of();
+    public ItemAttributeModifiers getDefaultAttributeModifiers() {
+        return ItemAttributeModifiers.EMPTY;
     }
 
     @Override

@@ -4,11 +4,13 @@ import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.item.renderer.ScopeCrossbowRenderer;
 import dev.xylonity.bonsai.clockwork.common.entity.projectile.ClockworkArrowProjectile;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoCrossbowItem;
+import dev.xylonity.bonsai.clockwork.common.util.EnchantmentsUtil;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -18,15 +20,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.CrossbowAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -36,9 +38,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +91,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     public static int getQuickChargeLevel(ItemStack stack) {
-        final int raw = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.QUICK_CHARGE, stack);
+        final int raw = EnchantmentsUtil.level(stack, net.minecraft.world.item.enchantment.Enchantments.QUICK_CHARGE);
         return clampVariant(Math.max(0, raw));
     }
 
@@ -106,57 +108,57 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     private static boolean isScoping(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean(NBT_SCOPING);
+        return StackNbt.tag(stack).getBoolean(NBT_SCOPING);
     }
 
     private static InteractionHand getScopeHand(ItemStack stack) {
-        if (!stack.hasTag()) {
-            return InteractionHand.MAIN_HAND;
-        }
-
-        return stack.getTag().getByte(NBT_SCOPE_HAND) == 1 ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        return StackNbt.tag(stack).getByte(NBT_SCOPE_HAND) == 1 ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
     }
 
     private static void beginScoping(ItemStack stack, InteractionHand hand) {
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.putBoolean(NBT_SCOPING, true);
-        tag.putByte(NBT_SCOPE_HAND, (byte) (hand == InteractionHand.MAIN_HAND ? 0 : 1));
+        StackNbt.update(stack, tag -> {
+            tag.putBoolean(NBT_SCOPING, true);
+            tag.putByte(NBT_SCOPE_HAND, (byte) (hand == InteractionHand.MAIN_HAND ? 0 : 1));
+        });
     }
 
     private static void clearScoping(ItemStack stack) {
-        if (!stack.hasTag()) {
+        if (!StackNbt.has(stack)) {
             return;
         }
 
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.remove(NBT_SCOPING);
-        tag.remove(NBT_SCOPE_HAND);
+        StackNbt.update(stack, tag -> {
+            tag.remove(NBT_SCOPING);
+            tag.remove(NBT_SCOPE_HAND);
+        });
     }
 
     private static void beginLoad(ItemStack stack, long tick, int quickChargeLevel) {
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.putLong(NBT_LOAD_START_TICK, tick);
-        tag.putInt(NBT_LOAD_VARIANT, clampVariant(quickChargeLevel));
-        tag.putBoolean(NBT_LOAD_PLAYED, false);
+        StackNbt.update(stack, tag -> {
+            tag.putLong(NBT_LOAD_START_TICK, tick);
+            tag.putInt(NBT_LOAD_VARIANT, clampVariant(quickChargeLevel));
+            tag.putBoolean(NBT_LOAD_PLAYED, false);
+        });
     }
 
     private static void clearLoadFlags(ItemStack stack) {
-        if (!stack.hasTag()) {
+        if (!StackNbt.has(stack)) {
             return;
         }
 
-        final CompoundTag tag = stack.getOrCreateTag();
-        tag.remove(NBT_LOAD_START_TICK);
-        tag.remove(NBT_LOAD_VARIANT);
-        tag.remove(NBT_LOAD_PLAYED);
+        StackNbt.update(stack, tag -> {
+            tag.remove(NBT_LOAD_START_TICK);
+            tag.remove(NBT_LOAD_VARIANT);
+            tag.remove(NBT_LOAD_PLAYED);
+        });
     }
 
     private static void setCanLoad(ItemStack stack, boolean canLoad) {
-        stack.getOrCreateTag().putBoolean(NBT_CAN_LOAD, canLoad);
+        StackNbt.update(stack, tag -> tag.putBoolean(NBT_CAN_LOAD, canLoad));
     }
 
     public static int getLoadVariant(ItemStack stack) {
-        return clampVariant(stack.getOrCreateTag().getInt(NBT_LOAD_VARIANT));
+        return clampVariant(StackNbt.tag(stack).getInt(NBT_LOAD_VARIANT));
     }
 
     private static boolean hasLoadableAmmo(LivingEntity shooter, ItemStack crossbow) {
@@ -169,7 +171,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 
@@ -232,12 +234,9 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
             return;
         }
 
-        final int usedTicks = getUseDuration(stack) - timeLeft;
+        final int usedTicks = getUseDuration(stack, user) - timeLeft;
         if (usedTicks >= getChargeDurationTicks(stack) && !isCharged(stack)) {
-            if (tryLoadProjectiles(user, stack)) {
-                setCharged(stack, true);
-            }
-
+            tryLoadProjectiles(user, stack);
         }
 
         clearScoping(stack);
@@ -252,7 +251,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
         final float velocity = baseVelocityFor(stack);
         fireAllLoaded(level, user, hand, stack, velocity, 0.0f);
 
-        setCharged(stack, false);
+        stack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
         clearScoping(stack);
         clearLoadFlags(stack);
         setCanLoad(stack, false);
@@ -260,7 +259,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
 
     private void tickLoadSound(Level level, LivingEntity entity, ItemStack stack, int remainingDuration) {
         final int chargeTicks = getChargeDurationTicks(stack);
-        final int usedTicks = stack.getUseDuration() - remainingDuration;
+        final int usedTicks = stack.getUseDuration(entity) - remainingDuration;
         final float progress = usedTicks / (float) chargeTicks;
 
         if (progress < LOAD_SOUND_THRESHOLD) {
@@ -309,7 +308,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
             return PlayState.STOP;
         }
 
-        final CompoundTag tag = stack.getOrCreateTag();
+        final CompoundTag tag = StackNbt.tag(stack);
         if (isCharged(stack)) {
             event.setAnimation(ANIM_LOADED);
             if (tag.getLong(NBT_LOAD_START_TICK) > 0L) {
@@ -325,7 +324,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
                 final float durationSec = chargeDurationTicks(variant) / 20f;
                 event.getController().setAnimationSpeed(1.0f / Math.max(0.001f, durationSec));
                 event.setAndContinue(ANIM_LOAD_VARIANTS[variant]);
-                tag.putBoolean(NBT_LOAD_PLAYED, true);
+                StackNbt.update(stack, t -> t.putBoolean(NBT_LOAD_PLAYED, true));
             }
 
             return PlayState.CONTINUE;
@@ -338,7 +337,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     private <T extends GeoAnimatable> boolean isCurrentlyLoading(ItemStack stack, AnimationState<T> event) {
-        final CompoundTag tag = stack.getOrCreateTag();
+        final CompoundTag tag = StackNbt.tag(stack);
         final boolean canLoad = tag.getBoolean(NBT_CAN_LOAD) || hasLoadableAmmo(resolveUser(event), stack);
         final boolean hasLoadStart = tag.getLong(NBT_LOAD_START_TICK) > 0L;
 
@@ -401,7 +400,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
         launchProjectile(projectile, shooter, crossbow, angleDeg, velocity, inaccuracy);
 
         final int cost = ammo.is(Items.FIREWORK_ROCKET) ? 3 : 1;
-        crossbow.hurtAndBreak(cost, shooter, e -> e.broadcastBreakEvent(hand));
+        crossbow.hurtAndBreak(cost, shooter, slotForHand(hand));
 
         level.addFreshEntity(projectile);
         level.playSound(null, shooter.blockPosition(), ClockworkSounds.CLOCKWORK_CROSSBOW_SHOOT.get(), SoundSource.PLAYERS, 1.0f, soundPitch);
@@ -413,16 +412,14 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
         }
 
         final ArrowItem arrowItem = (ammo.getItem() instanceof ArrowItem arrowItem1) ? arrowItem1 : (ArrowItem) Items.ARROW;
-        final AbstractArrow arrow = arrowItem.createArrow(level, ammo, shooter);
+        final AbstractArrow arrow = arrowItem.createArrow(level, ammo, shooter, crossbow);
 
         if (shooter instanceof Player) {
             arrow.setCritArrow(true);
         }
-        arrow.setShotFromCrossbow(true);
 
-        final int pierce = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PIERCING, crossbow);
-        if (pierce > 0) {
-            arrow.setPierceLevel((byte) pierce);
+        if (level instanceof ServerLevel serverLevel) {
+            EnchantmentHelper.onProjectileSpawned(serverLevel, crossbow, arrow, item -> {});
         }
 
         if (creative || angleDeg != 0.0f) {
@@ -441,16 +438,10 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     private static void launchProjectile(Projectile projectile, LivingEntity shooter, ItemStack crossbow, float angleDeg, float velocity, float inaccuracy) {
-        if (shooter instanceof CrossbowAttackMob crossbowAttackMob) {
-            crossbowAttackMob.shootCrossbowProjectile(crossbowAttackMob.getTarget(), crossbow, projectile, angleDeg);
-        }
-        else {
-            Vec3 up = shooter.getUpVector(1.0f);
-            Vec3 look = shooter.getViewVector(1.0f);
-            Vector3f direction = look.toVector3f().rotate(new Quaternionf().setAngleAxis(angleDeg * 0.017453292f, up.x, up.y, up.z));
-            projectile.shoot(direction.x(), direction.y(), direction.z(), velocity, inaccuracy);
-        }
-
+        Vec3 up = shooter.getUpVector(1.0f);
+        Vec3 look = shooter.getViewVector(1.0f);
+        Vector3f direction = look.toVector3f().rotate(new Quaternionf().setAngleAxis(angleDeg * 0.017453292f, up.x, up.y, up.z));
+        projectile.shoot(direction.x(), direction.y(), direction.z(), velocity, inaccuracy);
     }
 
     private static void awardShotStats(Level level, LivingEntity shooter, ItemStack crossbow) {
@@ -462,7 +453,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     private static boolean tryLoadProjectiles(LivingEntity shooter, ItemStack crossbow) {
-        final int multishotLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MULTISHOT, crossbow);
+        final int multishotLevel = EnchantmentsUtil.level(crossbow, net.minecraft.world.item.enchantment.Enchantments.MULTISHOT);
         final int shotCount = (multishotLevel == 0) ? 1 : 3;
         final boolean creative = shooter instanceof Player p && p.getAbilities().instabuild;
 
@@ -511,40 +502,25 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     }
 
     private static List<ItemStack> getChargedProjectiles(ItemStack crossbow) {
-        final List<ItemStack> result = new ArrayList<>();
-        final CompoundTag tag = crossbow.getTag();
-        if (tag != null && tag.contains("ChargedProjectiles", 9)) {
-            final ListTag list = tag.getList("ChargedProjectiles", 10);
-            for (int i = 0; i < list.size(); i++) {
-                result.add(ItemStack.of(list.getCompound(i)));
-            }
-
-        }
-
-        return result;
+        return new ArrayList<>(crossbow.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY).getItems());
     }
 
     private static void clearChargedProjectiles(ItemStack crossbow) {
-        final CompoundTag tag = crossbow.getTag();
-        if (tag != null) {
-            final ListTag list = tag.getList("ChargedProjectiles", 9);
-            list.clear();
-            tag.put("ChargedProjectiles", list);
-        }
-
+        crossbow.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY);
     }
 
     private static void addChargedProjectile(ItemStack crossbow, ItemStack ammo) {
-        final CompoundTag tag = crossbow.getOrCreateTag();
-        final ListTag list = tag.contains("ChargedProjectiles", 9) ? tag.getList("ChargedProjectiles", 10) : new ListTag();
-        final CompoundTag entry = new CompoundTag();
-        ammo.save(entry);
-        list.add(entry);
-        tag.put("ChargedProjectiles", list);
+        final List<ItemStack> items = getChargedProjectiles(crossbow);
+        items.add(ammo);
+        crossbow.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(items));
     }
 
     private static boolean containsProjectileType(ItemStack crossbow, Item item) {
-        return getChargedProjectiles(crossbow).stream().anyMatch(s -> s.is(item));
+        return crossbow.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY).contains(item);
+    }
+
+    private static EquipmentSlot slotForHand(InteractionHand hand) {
+        return hand == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
     }
 
     private static float[] randomShotPitches(RandomSource random) {

@@ -15,8 +15,8 @@ public class ClockworkArrowProjectileRenderer extends GeoEntityRenderer<Clockwor
     }
 
     @Override
-    protected void applyRotations(ClockworkArrowProjectile animatable, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick) {
-        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick);
+    protected void applyRotations(ClockworkArrowProjectile animatable, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick, float nativeScale) {
+        super.applyRotations(animatable, poseStack, ageInTicks, rotationYaw, partialTick, nativeScale);
 
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, animatable.yRotO, animatable.getYRot()) - 90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(-(Mth.lerp(partialTick, animatable.xRotO, animatable.getXRot()))));

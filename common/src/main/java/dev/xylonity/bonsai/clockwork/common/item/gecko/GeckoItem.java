@@ -1,13 +1,14 @@
 package dev.xylonity.bonsai.clockwork.common.item.gecko;
 
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.Item;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animatable.instance.SingletonAnimatableInstanceCache;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animatable.instance.SingletonAnimatableInstanceCache;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class GeckoItem extends Item implements GeoItem {
 
@@ -20,18 +21,21 @@ public abstract class GeckoItem extends Item implements GeoItem {
 
     protected abstract Object createGeckoRenderer();
 
-    /**
-     * Dead code, stub to satisfy the fabric compiler
-     */
-    public void createRenderer(Consumer<Object> consumer) {
-        ;;
-    }
+    @Override
+    public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
+        consumer.accept(new GeoRenderProvider() {
+            private BlockEntityWithoutLevelRenderer renderer;
 
-    /**
-     * Dead code, stub to satisfy the fabric compiler
-     */
-    public Supplier<Object> getRenderProvider() {
-        return null;
+            @Override
+            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = (BlockEntityWithoutLevelRenderer) createGeckoRenderer();
+                }
+
+                return this.renderer;
+            }
+
+        });
     }
 
     @Override

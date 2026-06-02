@@ -9,17 +9,17 @@ public class GenericProjectileModel<T extends AbstractProjectile> extends GeoMod
 
     @Override
     public ResourceLocation getModelResource(AbstractProjectile baseProjectile) {
-        return new ResourceLocation(Clockwork.MOD_ID, "geo/generic.geo.json");
+        return Clockwork.resource("geo/generic.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(AbstractProjectile baseProjectile) {
-        return new ResourceLocation(Clockwork.MOD_ID, "textures/entity/generic.png");
+        return Clockwork.resource("textures/entity/generic.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(AbstractProjectile baseProjectile) {
-        return new ResourceLocation(Clockwork.MOD_ID, "animations/generic.animation.json");
+        return Clockwork.resource("animations/generic.animation.json");
     }
 
 }

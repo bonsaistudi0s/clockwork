@@ -3,13 +3,14 @@ package dev.xylonity.bonsai.clockwork.client.item.model;
 import dev.xylonity.bonsai.clockwork.Clockwork;
 import dev.xylonity.bonsai.clockwork.client.util.ClientUtil;
 import dev.xylonity.bonsai.clockwork.common.item.crossbow.ScopeCrossbow;
-import dev.xylonity.bonsai.clockwork.mixin.CrossbowItemAccessor;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ChargedProjectiles;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class ScopeCrossbowModel extends GeoModel<ScopeCrossbow> {
 
         ItemStack projectileToLoad = null;
         if (CrossbowItem.isCharged(stack)) {
-            List<ItemStack> projectiles = CrossbowItemAccessor.clockwork$getChargedProjectiles(stack);
+            List<ItemStack> projectiles = stack.getOrDefault(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.EMPTY).getItems();
             if (!projectiles.isEmpty()) {
                 projectileToLoad = projectiles.get(0);
             }

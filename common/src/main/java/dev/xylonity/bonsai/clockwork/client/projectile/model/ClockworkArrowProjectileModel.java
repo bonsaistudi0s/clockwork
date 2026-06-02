@@ -9,17 +9,17 @@ public class ClockworkArrowProjectileModel extends GeoModel<ClockworkArrowProjec
 
     @Override
     public ResourceLocation getModelResource(ClockworkArrowProjectile arrowProjectile) {
-        return new ResourceLocation(Clockwork.MOD_ID, "geo/clockwork_arrow.geo.json");
+        return Clockwork.resource("geo/clockwork_arrow.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(ClockworkArrowProjectile arrowProjectile) {
-        return new ResourceLocation(Clockwork.MOD_ID, "textures/entity/clockwork_arrow.png");
+        return Clockwork.resource("textures/entity/clockwork_arrow.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(ClockworkArrowProjectile arrowProjectile) {
-        return new ResourceLocation(Clockwork.MOD_ID, "animations/clockwork_arrow.animation.json");
+        return Clockwork.resource("animations/clockwork_arrow.animation.json");
     }
 
 }

@@ -5,6 +5,7 @@ import dev.xylonity.bonsai.clockwork.client.item.renderer.FlamethrowerRenderer;
 import dev.xylonity.bonsai.clockwork.client.particle.FlamethrowerParticleData;
 import dev.xylonity.bonsai.clockwork.common.entity.projectile.trigger.FlamethrowerTriggerProjectile;
 import dev.xylonity.bonsai.clockwork.common.item.gecko.GeckoItem;
+import dev.xylonity.bonsai.clockwork.common.util.StackNbt;
 import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
@@ -14,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,10 +25,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 
 import java.util.Random;
 
@@ -59,7 +61,7 @@ public class FlamethrowerItem extends GeckoItem {
     }
 
     @Override
-    public int getUseDuration(final @NotNull ItemStack stack) {
+    public int getUseDuration(final @NotNull ItemStack stack, final @NotNull LivingEntity entity) {
         return 72000;
     }
 
@@ -106,8 +108,8 @@ public class FlamethrowerItem extends GeckoItem {
         setUseTicks(itemStack, ticks);
 
         if (ticks % DURABILITY_INTERVAL == 0 && !player.getAbilities().instabuild) {
-            final InteractionHand hand = player.getUsedItemHand();
-            itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+            final EquipmentSlot slot = player.getUsedItemHand() == InteractionHand.OFF_HAND ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+            itemStack.hurtAndBreak(1, player, slot);
         }
 
         if (!player.getAbilities().instabuild) {
@@ -159,27 +161,27 @@ public class FlamethrowerItem extends GeckoItem {
     }
 
     public static boolean isSpraying(final ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean(NBT_SPRAYING);
+        return StackNbt.tag(stack).getBoolean(NBT_SPRAYING);
     }
 
     private static void setSpraying(final ItemStack stack, boolean value) {
-        stack.getOrCreateTag().putBoolean(NBT_SPRAYING, value);
+        StackNbt.update(stack, tag -> tag.putBoolean(NBT_SPRAYING, value));
     }
 
     private static int getUseTicks(final ItemStack stack) {
-        return stack.getOrCreateTag().getInt(NBT_USE_TICKS);
+        return StackNbt.tag(stack).getInt(NBT_USE_TICKS);
     }
 
     private static void setUseTicks(final ItemStack stack, int ticks) {
-        stack.getOrCreateTag().putInt(NBT_USE_TICKS, ticks);
+        StackNbt.update(stack, tag -> tag.putInt(NBT_USE_TICKS, ticks));
     }
 
     private static int getFuelTicks(final ItemStack stack) {
-        return stack.getOrCreateTag().getInt(NBT_FUEL_TICKS);
+        return StackNbt.tag(stack).getInt(NBT_FUEL_TICKS);
     }
 
     private static void setFuelTicks(final ItemStack stack, int ticks) {
-        stack.getOrCreateTag().putInt(NBT_FUEL_TICKS, ticks);
+        StackNbt.update(stack, tag -> tag.putInt(NBT_FUEL_TICKS, ticks));
     }
 
     private void spawnFlameParticles(final ServerLevel level, final Player player) {

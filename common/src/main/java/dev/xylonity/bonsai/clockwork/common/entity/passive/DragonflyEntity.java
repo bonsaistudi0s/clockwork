@@ -34,12 +34,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 
 public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRideable {
 
@@ -71,11 +71,11 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(STATE, 0);
-        this.entityData.define(ASCENDING, false);
-        this.entityData.define(ACTIVATING_TICKS, -1);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(STATE, 0);
+        builder.define(ASCENDING, false);
+        builder.define(ACTIVATING_TICKS, -1);
     }
 
     public void setState(int state) {
@@ -323,8 +323,8 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     }
 
     @Override
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHit) {
-        super.dropCustomDeathLoot(source, looting, recentlyHit);
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
+        super.dropCustomDeathLoot(level, source, recentlyHit);
         this.spawnAtLocation(new ItemStack(ClockworkItems.CLOCKWORK_GEAR.get(), random.nextInt(3)));
         this.spawnAtLocation(new ItemStack(Items.COPPER_INGOT, random.nextInt(3)));
         this.spawnAtLocation(new ItemStack(Items.GOLD_INGOT, random.nextInt(3)));
