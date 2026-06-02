@@ -165,6 +165,9 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
             else if (isDrilling() || isDrillingUp()) {
                 KnightLibPersistentSounds.tick(this, "clockwork:drill_loop");
             }
+            else if (!isBroken()) {
+                KnightLibPersistentSounds.tick(this, "clockwork:drill_idle");
+            }
 
             setYHeadRot(Mth.approachDegrees(getYHeadRot(), getYRot(), 12.0f));
             prevDrillTilt = drillTilt;

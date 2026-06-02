@@ -218,6 +218,13 @@
       }
     ]
   },
+  "drill_idle": {
+    "sounds": [
+      {
+        "name": "clockwork:drill_idle"
+      }
+    ]
+  },
   "drill_walk_loop": {
     "sounds": [
       {
@@ -229,6 +236,13 @@
     "sounds": [
       {
         "name": "clockwork:flamethrower_loop"
+      }
+    ]
+  },
+  "flamethrower_end": {
+    "sounds": [
+      {
+        "name": "clockwork:flamethrower_end"
       }
     ]
   }

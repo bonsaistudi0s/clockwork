@@ -35,8 +35,10 @@ public class ClockworkSounds {
     public static final ResourceEntry<SoundEvent> DRILL_LOOP = SOUNDS.register("drill_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_loop")));
     public static final ResourceEntry<SoundEvent> DRILL_WALK_LOOP = SOUNDS.register("drill_walk_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_walk_loop")));
     public static final ResourceEntry<SoundEvent> DRILL_REPAIR = SOUNDS.register("drill_repair", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_repair")));
+    public static final ResourceEntry<SoundEvent> DRILL_IDLE = SOUNDS.register("drill_idle", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("drill_idle")));
 
     public static final ResourceEntry<SoundEvent> FLAMETHROWER_LOOP = SOUNDS.register("flamethrower_loop", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("flamethrower_loop")));
+    public static final ResourceEntry<SoundEvent> FLAMETHROWER_END = SOUNDS.register("flamethrower_end", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("flamethrower_end")));
 
     public static final ResourceEntry<SoundEvent> DRAGONFLY_GEAR = SOUNDS.register("dragonfly_gear", () -> SoundEvent.createVariableRangeEvent(Clockwork.resource("dragonfly_gear")));
 
