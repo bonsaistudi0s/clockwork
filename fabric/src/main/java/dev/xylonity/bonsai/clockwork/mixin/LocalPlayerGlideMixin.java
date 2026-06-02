@@ -1,10 +1,10 @@
 package dev.xylonity.bonsai.clockwork.mixin;
 
 import dev.xylonity.bonsai.clockwork.common.item.wings.CustomGlider;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;

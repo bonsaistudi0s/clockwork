@@ -1,26 +1,26 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " I ",
-    " S ",
-    "FGF"
+    "G G",
+    "IEI",
+    "L L"
   ],
   "key": {
     "I": {
       "item": "minecraft:gold_ingot"
     },
-    "S": {
-      "item": "minecraft:stick"
+    "L": {
+      "item": "minecraft:leather"
     },
-    "F": {
-      "item": "minecraft:feather"
+    "E": {
+      "item": "minecraft:elytra"
     },
     "G": {
       "item": "clockwork:clockwork_gear"
     }
   },
   "result": {
-    "item": "clockwork:clockwork_arrow",
-    "count": 4
+    "id": "clockwork:clockwork_wings",
+    "count": 1
   }
 }

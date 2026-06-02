@@ -1,26 +1,29 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " GG",
-    "IEG",
+    " A ",
+    "QGI",
     " C "
   ],
   "key": {
-    "G": {
+    "I": {
       "item": "minecraft:gold_ingot"
     },
-    "E": {
-      "item": "clockwork:clockwork_gear"
+    "A": {
+      "item": "minecraft:glass"
     },
-    "I": {
-      "item": "minecraft:iron_ingot"
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "G": {
+      "item": "clockwork:clockwork_gear"
     },
     "C": {
       "item": "minecraft:copper_ingot"
     }
   },
   "result": {
-    "item": "clockwork:clockwork_flamethrower",
+    "id": "clockwork:clockwork_potion_sprayer",
     "count": 1
   }
 }

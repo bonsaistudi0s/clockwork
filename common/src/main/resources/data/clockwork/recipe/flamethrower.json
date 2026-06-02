@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "IGG",
-    "ICG",
-    "IEE"
+    " GG",
+    "IEG",
+    " C "
   ],
   "key": {
     "G": {
@@ -20,7 +20,7 @@
     }
   },
   "result": {
-    "item": "clockwork:clockwork_drill",
+    "id": "clockwork:clockwork_flamethrower",
     "count": 1
   }
 }

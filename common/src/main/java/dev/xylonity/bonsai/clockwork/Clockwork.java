@@ -5,6 +5,7 @@ import dev.xylonity.bonsai.clockwork.proxy.IProxy;
 import dev.xylonity.bonsai.clockwork.registry.*;
 import dev.xylonity.knightlib.api.network.Network;
 import dev.xylonity.knightlib.api.network.NetworkEndpoint;
+import dev.xylonity.knightlib.api.util.ResourceLocations;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class Clockwork {
     }
 
     public static ResourceLocation resource(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocations.of(MOD_ID, path);
     }
 
 }

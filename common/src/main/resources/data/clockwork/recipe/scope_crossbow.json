@@ -3,7 +3,7 @@
   "pattern": [
     "GIG",
     "ICI",
-    " B "
+    " S "
   ],
   "key": {
     "I": {
@@ -12,15 +12,15 @@
     "C": {
       "item": "minecraft:crossbow"
     },
-    "B": {
-      "item": "clockwork:crossbow_barrel"
+    "S": {
+      "item": "minecraft:spyglass"
     },
     "G": {
       "item": "clockwork:clockwork_gear"
     }
   },
   "result": {
-    "item": "clockwork:barrel_crossbow",
+    "id": "clockwork:scope_crossbow",
     "count": 1
   }
 }

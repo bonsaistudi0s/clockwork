@@ -1,26 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "GIG",
-    "ICI",
-    " S "
+    "IQI",
+    "QGQ",
+    "IQI"
   ],
   "key": {
     "I": {
       "item": "minecraft:gold_ingot"
     },
-    "C": {
-      "item": "minecraft:crossbow"
-    },
-    "S": {
-      "item": "minecraft:spyglass"
+    "Q": {
+      "item": "minecraft:quartz"
     },
     "G": {
       "item": "clockwork:clockwork_gear"
     }
   },
   "result": {
-    "item": "clockwork:scope_crossbow",
+    "id": "clockwork:crossbow_barrel",
     "count": 1
   }
 }

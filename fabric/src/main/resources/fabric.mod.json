@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "dev.xylonity.bonsai.clockwork.ClockworkFabric"
+            "dev.xylonity.bonsai.clockwork.ClockworkFabric"
         ],
         "client": [
             "dev.xylonity.bonsai.clockwork.ClockworkFabricClient"
@@ -27,11 +27,10 @@
         "clockwork.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.14",
-        "fabric": "*",
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
         "minecraft": "${minecraft_version}",
-        "java": ">=17",
-        "knightlib": ">=1.5.0"
+        "java": ">=${java_version}"
     },
     "suggests": {
         "another-mod": "*"

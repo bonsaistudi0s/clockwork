@@ -14,9 +14,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Clockwork.MOD_ID)
-public class ClockworkForge {
+public class ClockworkNeoForge {
 
-    public ClockworkForge() {
+    public ClockworkNeoForge() {
         // Common package proxy registration
         Clockwork.PROXY = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 

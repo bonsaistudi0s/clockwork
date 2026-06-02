@@ -1,26 +1,26 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "G G",
-    "IEI",
-    "L L"
+    "IGG",
+    "ICG",
+    "IEE"
   ],
   "key": {
-    "I": {
+    "G": {
       "item": "minecraft:gold_ingot"
     },
-    "L": {
-      "item": "minecraft:leather"
-    },
     "E": {
-      "item": "minecraft:elytra"
-    },
-    "G": {
       "item": "clockwork:clockwork_gear"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
     }
   },
   "result": {
-    "item": "clockwork:clockwork_wings",
+    "id": "clockwork:clockwork_drill",
     "count": 1
   }
 }

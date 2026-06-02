@@ -11,7 +11,7 @@
     }
   },
   "result": {
-    "item": "clockwork:clockwork_gear",
+    "id": "clockwork:clockwork_gear",
     "count": 3
   }
 }
