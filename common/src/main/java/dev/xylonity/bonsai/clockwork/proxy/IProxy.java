@@ -16,4 +16,8 @@ public interface IProxy {
         ;;
     }
 
+    default void trySpawnFirstPersonFlameParticles(Player player) {
+        ;;
+    }
+
 }

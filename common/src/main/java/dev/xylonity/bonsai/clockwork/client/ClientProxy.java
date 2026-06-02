@@ -1,6 +1,7 @@
 package dev.xylonity.bonsai.clockwork.client;
 
 import dev.xylonity.bonsai.clockwork.client.event.ClockworkClientEvents;
+import dev.xylonity.bonsai.clockwork.common.item.flamethrower.FlamethrowerParticleHelper;
 import dev.xylonity.bonsai.clockwork.proxy.IProxy;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import dev.xylonity.knightlib.api.event.KnightLibEvents;
@@ -27,6 +28,11 @@ public class ClientProxy implements IProxy {
     @Override
     public void registerClientEvents() {
         KnightLibEvents.CLIENT.register(ClockworkClientEvents.class);
+    }
+
+    @Override
+    public void trySpawnFirstPersonFlameParticles(Player player) {
+        FlamethrowerParticleHelper.trySpawnFirstPersonParticles(player);
     }
 
 }
