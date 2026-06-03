@@ -1,3 +1,6 @@
+# 1.1.2
+- Attempt to fix forge not applying mixins correctly
+
 # 1.1.1
 - Added a config option to specify the durability for both scope and barrel crossbows
 - Added a config option to specify the spawn weight, count and biomes for the clockwork dragonfly
