@@ -1,3 +1,7 @@
+# 1.1.1
+- Added a config option to specify the durability for both scope and barrel crossbows
+- Fixed a case where forge would crash due to a wrong mixin remapping
+
 # 1.1.0
 - Improved the smoothness of weapon sway, making it much more natural, especially when changing vertical speed (when jumping or descending)
 - Complete refactoring of the code, making it much more maintainable in the long run

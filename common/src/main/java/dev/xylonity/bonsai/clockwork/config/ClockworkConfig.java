@@ -87,6 +87,20 @@ public final class ClockworkConfig {
     public static int DRILL_BLOCKS_UNTIL_BROKEN = 128;
 
     @ConfigEntry(
+            category = "Clockwork Crossbows",
+            comment = "Barrel Crossbow durability. Each fired arrow costs 1 and each firework costs 3, like the vanilla crossbow. Set to 0 for an unbreakable crossbow",
+            min = 0, max = 100000
+    )
+    public static int BARREL_CROSSBOW_DEFAULT_DURABILITY = 465;
+
+    @ConfigEntry(
+            category = "Clockwork Crossbows",
+            comment = "Scope Crossbow durability. Each fired arrow costs 1 and each firework costs 3, like the vanilla crossbow. Set to 0 for an unbreakable crossbow",
+            min = 0, max = 100000
+    )
+    public static int SCOPE_CROSSBOW_DEFAULT_DURABILITY = 465;
+
+    @ConfigEntry(
             category = "Clockwork Flamethrower",
             comment = "Default durability",
             min = 0, max = 100000
