@@ -14,9 +14,9 @@ public class LocalPlayerGlideMixin {
     @Redirect(method = "aiStep",
               at = @At(
                       value = "INVOKE",
-                      target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
-              ),
-              remap = false)
+                      target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                      remap = false
+              ))
     private boolean clockwork$clientGlideCheck(ItemStack stack, LivingEntity entity) {
         if (stack.getItem() instanceof CustomGlider glider) {
             return glider.canGlide(stack, entity);

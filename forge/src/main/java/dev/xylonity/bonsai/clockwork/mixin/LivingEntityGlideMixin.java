@@ -13,9 +13,9 @@ public class LivingEntityGlideMixin {
     @Redirect(method = "updateFallFlying",
               at = @At(
                       value = "INVOKE",
-                      target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
-              ),
-              remap = false)
+                      target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                      remap = false
+              ))
     private boolean clockwork$canGlide(ItemStack stack, LivingEntity entity) {
         if (stack.getItem() instanceof CustomGlider glider) {
             return glider.canGlide(stack, entity);
@@ -27,9 +27,9 @@ public class LivingEntityGlideMixin {
     @Redirect(method = "updateFallFlying",
               at = @At(
                       value = "INVOKE",
-                      target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z"
-              ),
-              remap = false)
+                      target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z",
+                      remap = false
+              ))
     private boolean clockwork$glideTick(ItemStack stack, LivingEntity entity, int flightTicks) {
         if (stack.getItem() instanceof CustomGlider glider) {
             return glider.onGlideTick(stack, entity, flightTicks);
