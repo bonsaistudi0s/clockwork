@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -57,8 +57,8 @@ public class FlamethrowerRenderer extends GeoItemRenderer<FlamethrowerItem> {
         pose.pushPose();
         ClientUtil.applyStaticTransform(ctx, pose);
 
-        final ModelResourceLocation modelResourceLocation = ClientUtil.extraItemModel("clockwork_flamethrower_2d");
-        minecraft.getItemRenderer().render(stack, ctx, false, pose, buf, light, overlay, minecraft.getModelManager().getModel(modelResourceLocation));
+        final BakedModel model = ClientUtil.extraItemModel("clockwork_flamethrower_2d");
+        minecraft.getItemRenderer().render(stack, ctx, false, pose, buf, light, overlay, model);
 
         pose.popPose();
     }

@@ -1,3 +1,8 @@
+# 1.1.1
+- Added a config option to specify the durability for both scope and barrel crossbows
+- Added a config option to specify the spawn weight, count and biomes for the clockwork dragonfly
+- Fixed a case where fabric wouldn't show the 2d gui icon on some items
+
 # 1.1.0
 - Improved the smoothness of weapon sway, making it much more natural, especially when changing vertical speed (when jumping or descending)
 - Complete refactoring of the code, making it much more maintainable in the long run

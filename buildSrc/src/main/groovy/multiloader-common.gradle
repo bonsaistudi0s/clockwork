@@ -51,6 +51,10 @@ repositories {
         url = 'https://maven.blamejared.com'
     }
     maven {
+        name = 'Local vault'
+        url = uri('file:///C:/maven')
+    }
+    maven {
         name = "Xylonity's vault"
         url = "https://raw.githubusercontent.com/Xylonity/maven-centralish/main/maven/"
     }

@@ -73,6 +73,13 @@ public final class ClockworkConfig {
     public static double CLOCKWORK_GEAR_HEAL_AMOUNT = 3;
 
     @ConfigEntry(
+            category = "Dragonfly",
+            comment = "Broken Dragonfly natural spawn rules in the format (weight, minCount, maxCount, biomes/tags). Biomes use their id (like minecraft:jungle), biome tags are prefixed with # (like #minecraft:is_forest). Set the weight to 0 to disable natural spawning",
+            requiresRestart = true
+    )
+    public static String BROKEN_DRAGONFLY_SPAWN = "30, 1, 1, minecraft:jungle, minecraft:old_growth_spruce_taiga, minecraft:old_growth_pine_taiga";
+
+    @ConfigEntry(
             category = "Clockwork Drill",
             comment = "Number of clockwork gears needed to repair the drill once it has broken",
             min = 1, max = 100
@@ -85,6 +92,20 @@ public final class ClockworkConfig {
             min = 1, max = 10000
     )
     public static int DRILL_BLOCKS_UNTIL_BROKEN = 128;
+
+    @ConfigEntry(
+            category = "Clockwork Crossbows",
+            comment = "Barrel Crossbow durability. Each fired arrow costs 1 and each firework costs 3, like the vanilla crossbow. Set to 0 for an unbreakable crossbow",
+            min = 0, max = 100000
+    )
+    public static int BARREL_CROSSBOW_DEFAULT_DURABILITY = 465;
+
+    @ConfigEntry(
+            category = "Clockwork Crossbows",
+            comment = "Scope Crossbow durability. Each fired arrow costs 1 and each firework costs 3, like the vanilla crossbow. Set to 0 for an unbreakable crossbow",
+            min = 0, max = 100000
+    )
+    public static int SCOPE_CROSSBOW_DEFAULT_DURABILITY = 465;
 
     @ConfigEntry(
             category = "Clockwork Flamethrower",

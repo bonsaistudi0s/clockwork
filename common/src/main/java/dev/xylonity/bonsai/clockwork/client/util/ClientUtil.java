@@ -2,17 +2,18 @@ package dev.xylonity.bonsai.clockwork.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.xylonity.bonsai.clockwork.Clockwork;
+import dev.xylonity.knightlib.api.client.KnightLibClientModels;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class ClientUtil {
 
-    public static ModelResourceLocation extraItemModel(String name) {
-        return new ModelResourceLocation(Clockwork.resource("item/" + name), "standalone");
+    public static BakedModel extraItemModel(String name) {
+        return KnightLibClientModels.getAdditionalModel(Clockwork.resource("item/" + name));
     }
 
     public static ItemStack getCurrentStack() {

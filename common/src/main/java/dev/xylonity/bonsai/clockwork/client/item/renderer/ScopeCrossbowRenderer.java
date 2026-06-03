@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CrossbowItem;
@@ -76,12 +75,10 @@ public class ScopeCrossbowRenderer extends GeoItemRenderer<ScopeCrossbow> {
 
     private BakedModel resolveStaticModel(ItemStack stack, Minecraft minecraft) {
         final String modelName = resolveModelName(stack, minecraft.player);
-        ModelResourceLocation modelResourceLocation = ClientUtil.extraItemModel(modelName);
-        BakedModel bakedModel = minecraft.getModelManager().getModel(modelResourceLocation);
+        BakedModel bakedModel = ClientUtil.extraItemModel(modelName);
 
         if (bakedModel == minecraft.getModelManager().getMissingModel()) {
-            modelResourceLocation = ClientUtil.extraItemModel(MODEL_STANDBY);
-            bakedModel = minecraft.getModelManager().getModel(modelResourceLocation);
+            bakedModel = ClientUtil.extraItemModel(MODEL_STANDBY);
         }
 
         return bakedModel;

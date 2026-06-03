@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -152,8 +152,8 @@ public class PotionSprayerRenderer extends GeoItemRenderer<PotionSprayer> {
         pose.pushPose();
         ClientUtil.applyStaticTransform(ctx, pose);
 
-        final ModelResourceLocation modelResourceLocation = ClientUtil.extraItemModel(MODEL_2D);
-        minecraft.getItemRenderer().render(stack, ctx, false, pose, buf, light, overlay, minecraft.getModelManager().getModel(modelResourceLocation));
+        final BakedModel model = ClientUtil.extraItemModel(MODEL_2D);
+        minecraft.getItemRenderer().render(stack, ctx, false, pose, buf, light, overlay, model);
 
         pose.popPose();
     }
