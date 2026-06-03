@@ -118,7 +118,7 @@ def changelogSection = extractChangelogForVersion(project.file('../CHANGELOG.md'
 tasks.register('publishCurseForge', TaskPublishCurseForge) {
     group = 'publishing'
     apiToken = System.getenv("CURSEFORGE_TOKEN")
-    def mainFile = upload("596411", jar)
+    def mainFile = upload("596411", reobfJar)
 
     mainFile.displayName = "[FORGE] Clockwork " + project.property('version').toString() + "-" + minecraft_version
 
@@ -142,7 +142,7 @@ modrinth {
     loaders = ["forge"]
     gameVersions = ["1.20", "1.20.1"]
 
-    uploadFile = jar
+    uploadFile = reobfJar
     versionNumber = project.property('version').toString()
     versionType = "release"
 
