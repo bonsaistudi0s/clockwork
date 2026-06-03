@@ -1,5 +1,6 @@
 # 1.1.1
 - Added a config option to specify the durability for both scope and barrel crossbows
+- Added a config option to specify the spawn weight, count and biomes for the clockwork dragonfly
 - Fixed a case where forge would crash due to a wrong mixin remapping
 
 # 1.1.0

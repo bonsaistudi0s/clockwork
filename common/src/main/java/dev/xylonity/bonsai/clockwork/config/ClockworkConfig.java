@@ -73,6 +73,13 @@ public final class ClockworkConfig {
     public static double CLOCKWORK_GEAR_HEAL_AMOUNT = 3;
 
     @ConfigEntry(
+            category = "Dragonfly",
+            comment = "Broken Dragonfly natural spawn rules in the format (weight, minCount, maxCount, biomes/tags). Biomes use their id (like minecraft:jungle), biome tags are prefixed with # (like #minecraft:is_forest). Set the weight to 0 to disable natural spawning",
+            requiresRestart = true
+    )
+    public static String BROKEN_DRAGONFLY_SPAWN = "30, 1, 1, minecraft:jungle, minecraft:old_growth_spruce_taiga, minecraft:old_growth_pine_taiga";
+
+    @ConfigEntry(
             category = "Clockwork Drill",
             comment = "Number of clockwork gears needed to repair the drill once it has broken",
             min = 1, max = 100
