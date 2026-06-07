@@ -1,5 +1,6 @@
 # 1.1.2
 - Attempt to fix a case where some items from the mod were unenchantable
+- Attempt to fix a case where clockwork would crash with the mod Legendary Spellbooks present in the same pack
 
 # 1.1.1
 - Added a config option to specify the durability for both scope and barrel crossbows
