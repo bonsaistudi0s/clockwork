@@ -1,3 +1,6 @@
+# 1.1.3
+- Attempt to fix a case where clockwork would crash with the mod Legendary Spellbooks present in the same pack
+
 # 1.1.2
 - Attempt to fix forge not applying mixins correctly
 

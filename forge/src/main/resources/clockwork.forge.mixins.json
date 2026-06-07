@@ -5,14 +5,12 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "LivingEntityGlideMixin",
-    "PlayerGlideMixin"
+    "GeckoArmorGlideMixin"
   ],
   "client": [
     "GeckoArmorItemMixin",
     "GeckoCrossbowItemMixin",
-    "GeckoItemMixin",
-    "LocalPlayerGlideMixin"
+    "GeckoItemMixin"
   ],
   "server": [
   ],
