@@ -2,6 +2,7 @@
 - The clockwork drill texture is now separated into individual frames rather than being a full spritesheet
 - Now the clockwork drill state will go into idle mode every time its placed on the ground
 - Fixed flamethrower's flame particles spawning in the center of the screen when the player was facing perfectly up or down
+- Clockwork wings no longer boost upwards
 
 # 1.1.2
 - Attempt to fix a case where some items from the mod were unenchantable

@@ -57,7 +57,7 @@ public class ClockworkWingsBoostProjectile extends AbstractProjectile {
                 double boostMultiplier = ClockworkConfig.CLOCKWORK_WINGS_BOOST_VELOCITY;
                 attachedEntity.setDeltaMovement(deltaMovement.add(
                         lookAngle.x * 0.1 + (lookAngle.x * boostMultiplier - deltaMovement.x) * 0.5,
-                        lookAngle.y * 0.1 + (lookAngle.y * boostMultiplier - deltaMovement.y) * 0.5 + 0.5,
+                        lookAngle.y * 0.1 + (lookAngle.y * boostMultiplier - deltaMovement.y) * 0.5,
                         lookAngle.z * 0.1 + (lookAngle.z * boostMultiplier - deltaMovement.z) * 0.5
                 ));
                 player.hurtMarked = true;
