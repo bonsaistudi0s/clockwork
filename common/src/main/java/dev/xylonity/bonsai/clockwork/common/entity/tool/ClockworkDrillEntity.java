@@ -263,8 +263,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         // Stops if there is a cliff in front
         if (
                 level().getBlockState(ahead.below()).isAir() &&
-                level().getBlockState(ahead.below().below()).isAir() &&
-                level().getBlockState(ahead.below().below().below()).isAir()
+                level().getBlockState(ahead.below().below()).isAir()
         ) {
             setState(0);
             setDrilling(false);

@@ -4,6 +4,7 @@
 - Fixed flamethrower's flame particles spawning in the center of the screen when the player was facing perfectly up or down
 - Clockwork wings no longer boost upwards
 - Now the player is unable to place blocks on the clockwork drill hitbox
+- Now the clockwork drill stops if the cliff in front of it is 2 blocks high instead of 3
 
 # 1.1.2
 - Attempt to fix a case where some items from the mod were unenchantable
