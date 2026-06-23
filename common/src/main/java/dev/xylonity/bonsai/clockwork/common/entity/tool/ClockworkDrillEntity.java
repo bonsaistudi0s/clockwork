@@ -135,6 +135,13 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
                 drill.readAdditionalSaveData(itemTag);
             }
 
+            // Always starts in the idle state when placed
+            if (!drill.isBroken()) {
+                drill.setState(0);
+                drill.setDrilling(false);
+                drill.setDrillingUp(false);
+            }
+
             final BlockPos spawnPos = blockPos.above();
             drill.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
 
