@@ -120,6 +120,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
 
     public ClockworkDrillEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
+        this.blocksBuilding = true;
     }
 
     public static boolean create(final Level level, final BlockPos blockPos, @NotNull final Player player, @Nullable CompoundTag itemTag) {
