@@ -1,3 +1,6 @@
+# 1.1.3
+- The clockwork drill texture is now separated into individual frames rather than being a full spritesheet
+
 # 1.1.2
 - Attempt to fix a case where some items from the mod were unenchantable
 - Attempt to fix a case where clockwork would crash with the mod Legendary Spellbooks present in the same pack

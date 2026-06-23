@@ -11,6 +11,13 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class ClockworkDrillModel extends GeoModel<ClockworkDrillEntity> {
 
+    private static final ResourceLocation[] FRAMES = {
+            Clockwork.resource("textures/entity/clockwork_drill_0.png"),
+            Clockwork.resource("textures/entity/clockwork_drill_1.png"),
+            Clockwork.resource("textures/entity/clockwork_drill_2.png"),
+            Clockwork.resource("textures/entity/clockwork_drill_3.png")
+    };
+
     @Override
     public ResourceLocation getModelResource(ClockworkDrillEntity entity) {
         return Clockwork.resource("geo/clockwork_drill.geo.json");
@@ -18,7 +25,7 @@ public class ClockworkDrillModel extends GeoModel<ClockworkDrillEntity> {
 
     @Override
     public ResourceLocation getTextureResource(ClockworkDrillEntity entity) {
-        return Clockwork.resource("textures/entity/clockwork_drill.png");
+        return FRAMES[(entity.tickCount / 4) % FRAMES.length];
     }
 
     @Override
