@@ -3,6 +3,7 @@ package dev.xylonity.bonsai.clockwork.common.item.flamethrower;
 import dev.xylonity.bonsai.clockwork.client.particle.FlamethrowerParticleData;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -22,8 +23,9 @@ public final class FlamethrowerParticleHelper {
         }
 
         final Vec3 forward = player.getLookAngle().normalize();
-        final Vec3 worldUp = new Vec3(0, 1, 0);
-        final Vec3 right = forward.cross(worldUp).normalize();
+        final float yawRad = player.getYRot() * Mth.DEG_TO_RAD;
+        final Vec3 horizontalForward = new Vec3(-Mth.sin(yawRad), 0, Mth.cos(yawRad));
+        final Vec3 right = horizontalForward.cross(new Vec3(0, 1, 0)).normalize();
         final Vec3 up = right.cross(forward).normalize();
 
         final double handSign = player.getUsedItemHand() == InteractionHand.MAIN_HAND ? 1.0 : -1.0;
