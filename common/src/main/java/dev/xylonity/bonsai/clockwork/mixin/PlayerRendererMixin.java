@@ -1,12 +1,14 @@
 package dev.xylonity.bonsai.clockwork.mixin;
 
 import dev.xylonity.bonsai.clockwork.common.item.crossbow.BarrelCrossbow;
+import dev.xylonity.bonsai.clockwork.common.item.crossbow.ScopeCrossbow;
 import dev.xylonity.bonsai.clockwork.common.item.flamethrower.FlamethrowerItem;
 import dev.xylonity.bonsai.clockwork.common.item.sprayer.PotionSprayer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +32,9 @@ public abstract class PlayerRendererMixin {
         }
 
         final ItemStack inHand = player.getItemInHand(hand);
+        final boolean isScopedCrossbowAiming = inHand.getItem() instanceof ScopeCrossbow && CrossbowItem.isCharged(inHand);
         if (
+            !isScopedCrossbowAiming &&
             !(inHand.getItem() instanceof PotionSprayer) &&
             !(inHand.getItem() instanceof BarrelCrossbow) &&
             !(inHand.getItem() instanceof FlamethrowerItem)
