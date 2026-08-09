@@ -37,7 +37,7 @@ public class FlamethrowerTriggerProjectile extends GenericTriggerProjectile {
             }
 
             // Places fire on block contact and then discards
-            if (onGround()) {
+            if (onGround() || horizontalCollision) {
                 final BlockPos blockPos = blockPosition();
                 if (level().isEmptyBlock(blockPos)) {
                     level().setBlockAndUpdate(blockPos, BaseFireBlock.getState(level(), blockPos));
