@@ -1,4 +1,4 @@
-# 1.1.5
+# 1.1.4
 - Dragonflies now spawn inside allay cages from the pillager outposts
 - Increased broken dragonfly natural spawn weight from 30 to 50
 - The Clockwork Drill item now displays a duration bar in the inventory
