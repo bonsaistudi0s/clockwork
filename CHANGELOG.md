@@ -1,3 +1,12 @@
+# 1.1.5
+- Dragonflies now spawn inside allay cages from the pillager outposts
+- Increased broken dragonfly natural spawn weight from 30 to 50
+- The Clockwork Drill item now displays a duration bar in the inventory
+- Now the flamethrower ignites blocks from the side too, not just the top
+- Now playing the spyglass sound effect when zooming in with the scope crossbow
+- Changing the blocks until broken Clockwork Drill config entry no longer requires a game restart
+- Fixed players arms using an incorrect pose when aiming with the scope crossbow
+
 # 1.1.4
 - The clockwork drill texture is now separated into individual frames rather than being a full spritesheet
 - Now the clockwork drill state will go into idle mode every time its placed on the ground
