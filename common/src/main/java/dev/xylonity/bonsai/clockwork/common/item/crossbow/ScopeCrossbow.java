@@ -13,6 +13,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -195,6 +196,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
         final ItemStack stack = player.getItemInHand(hand);
         if (isCharged(stack)) {
             beginScoping(stack, hand);
+            player.playSound(SoundEvents.SPYGLASS_USE, 1.0f, 1.0f);
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(stack);
         }
@@ -215,11 +217,11 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingDuration) {
-        if (level.isClientSide) {
+        if (level.isClientSide || isCharged(stack)) {
             return;
         }
 
-        if (!isCharged(stack) && !hasLoadableAmmo(entity, stack)) {
+        if (!hasLoadableAmmo(entity, stack)) {
             abortUse(entity, stack);
             return;
         }
