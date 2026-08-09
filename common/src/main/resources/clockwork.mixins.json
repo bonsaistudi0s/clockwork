@@ -9,7 +9,9 @@
     "CrossbowItemMixin",
     "PlayerMixin",
     "PotionItemMixin",
-    "PotionUtilsMixin"
+    "PotionUtilsMixin",
+    "StructureTemplateAccessor",
+    "StructureTemplateManagerMixin"
   ],
   "client": [
     "ItemInHandRendererMixin",
@@ -21,4 +23,3 @@
     "defaultRequire": 1
   }
 }
-

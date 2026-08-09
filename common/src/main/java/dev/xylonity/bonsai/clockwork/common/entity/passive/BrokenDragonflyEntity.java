@@ -110,6 +110,16 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     }
 
     @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
+    }
+
+    @Override
     public void push(double x, double y, double z) {
         ;;
     }
