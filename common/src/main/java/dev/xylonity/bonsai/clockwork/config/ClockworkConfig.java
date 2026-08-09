@@ -77,7 +77,7 @@ public final class ClockworkConfig {
             comment = "Broken Dragonfly natural spawn rules in the format (weight, minCount, maxCount, biomes/tags). Biomes use their id (like minecraft:jungle), biome tags are prefixed with # (like #minecraft:is_forest). Set the weight to 0 to disable natural spawning",
             requiresRestart = true
     )
-    public static String BROKEN_DRAGONFLY_SPAWN = "30, 1, 1, minecraft:jungle, minecraft:old_growth_spruce_taiga, minecraft:old_growth_pine_taiga";
+    public static String BROKEN_DRAGONFLY_SPAWN = "50, 1, 1, minecraft:jungle, minecraft:old_growth_spruce_taiga, minecraft:old_growth_pine_taiga";
 
     @ConfigEntry(
             category = "Clockwork Drill",
