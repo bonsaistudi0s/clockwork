@@ -1,7 +1,9 @@
 package dev.xylonity.bonsai.clockwork.common.item.drill;
 
 import dev.xylonity.bonsai.clockwork.common.entity.tool.ClockworkDrillEntity;
+import dev.xylonity.bonsai.clockwork.config.ClockworkConfig;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -14,6 +16,34 @@ public class ClockworkDrillItem extends Item {
 
     public ClockworkDrillItem(Properties properties) {
         super(properties.stacksTo(1));
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getBlocksMined(stack) > 0;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return Math.round(13.0f * getRemainingDurability(stack));
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return Mth.hsvToRgb(getRemainingDurability(stack) / 3.0f, 1.0f, 1.0f);
+    }
+
+    private static float getRemainingDurability(ItemStack stack) {
+        return 1.0f - getBlocksMined(stack) / (float) ClockworkConfig.DRILL_BLOCKS_UNTIL_BROKEN;
+    }
+
+    private static int getBlocksMined(ItemStack stack) {
+        final CompoundTag tag = stack.getTag();
+        if (tag == null) {
+            return 0;
+        }
+
+        return Mth.clamp(tag.getInt("BlocksMined"), 0, ClockworkConfig.DRILL_BLOCKS_UNTIL_BROKEN);
     }
 
     @Override

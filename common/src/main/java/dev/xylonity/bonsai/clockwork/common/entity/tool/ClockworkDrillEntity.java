@@ -86,7 +86,6 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
     public int gearsToRepairCount = 0;
 
     private static final int DRILLING_PAUSE_DURATION = 7;
-    private static final int BLOCKS_UNTIL_BROKEN = ClockworkConfig.DRILL_BLOCKS_UNTIL_BROKEN;
 
     private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
@@ -95,7 +94,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
         public int get(int i) {
             return switch (i) {
                 case 0 -> blocksMinedCount;
-                case 1 -> BLOCKS_UNTIL_BROKEN;
+                case 1 -> ClockworkConfig.DRILL_BLOCKS_UNTIL_BROKEN;
                 default -> 0;
             };
 
@@ -349,7 +348,7 @@ public class ClockworkDrillEntity extends Entity implements GeoEntity, Container
                 }
 
                 ++this.blocksMinedCount;
-                if (blocksMinedCount >= BLOCKS_UNTIL_BROKEN) {
+                if (blocksMinedCount >= ClockworkConfig.DRILL_BLOCKS_UNTIL_BROKEN) {
                     setState(2);
                     setDrilling(false);
                     setDrillingUp(false);
