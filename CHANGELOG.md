@@ -1,6 +1,7 @@
 # 1.1.6
 - Added compat with knightlib 2.0.0
 - Added spawn eggs for the clockwork dragonfly and broken dragonfly
+- Fixed a mixin conflict with Punchy
 - Lowered dragonfly idle sound
 
 # 1.1.5

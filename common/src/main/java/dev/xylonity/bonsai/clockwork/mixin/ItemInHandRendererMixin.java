@@ -84,23 +84,6 @@ public class ItemInHandRendererMixin {
     @Redirect(
             method = "renderArmWithItem",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/player/AbstractClientPlayer;isUsingItem()Z")
-    )
-    private boolean clockwork$fakeNotUsingForScope(AbstractClientPlayer instance) {
-        if (instance.isUsingItem()) {
-            final ItemStack used = instance.getUseItem();
-            if (clockwork$isCorrectItem(used)) {
-                return false;
-            }
-
-        }
-
-        return instance.isUsingItem();
-    }
-
-    @Redirect(
-            method = "renderArmWithItem",
-            at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/player/AbstractClientPlayer;getUseItemRemainingTicks()I")
     )
     private int clockwork$zeroUseTicksForScope(AbstractClientPlayer instance) {
