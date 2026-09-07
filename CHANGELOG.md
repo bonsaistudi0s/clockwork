@@ -1,6 +1,7 @@
 # 1.1.6
 - Added compat with knightlib 2.0.0
 - Added spawn eggs for the clockwork dragonfly and broken dragonfly
+- Lowered dragonfly idle sound
 
 # 1.1.5
 - Dragonflies now spawn inside allay cages from the pillager outposts
