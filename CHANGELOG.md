@@ -1,3 +1,7 @@
+# 1.1.6
+- Added compat with knightlib 2.0.0
+- Added spawn eggs for the clockwork dragonfly and broken dragonfly
+
 # 1.1.5
 - Dragonflies now spawn inside allay cages from the pillager outposts
 - Increased broken dragonfly natural spawn weight from 30 to 50
