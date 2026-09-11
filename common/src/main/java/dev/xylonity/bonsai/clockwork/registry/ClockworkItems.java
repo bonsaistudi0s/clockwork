@@ -34,4 +34,7 @@ public class ClockworkItems {
 
     public static final ResourceEntry<Item> CLOCKWORK_DRILL = ITEMS.register("clockwork_drill", () -> new ClockworkDrillItem(new Item.Properties().stacksTo(1)));
 
+    public static final ResourceEntry<Item> DRAGONFLY_SPAWN_EGG = ITEMS.registerSpawnEgg("dragonfly_spawn_egg", ClockworkEntities.DRAGONFLY, 0x4D2F25, 0xD99200, new Item.Properties());
+    public static final ResourceEntry<Item> BROKEN_DRAGONFLY_SPAWN_EGG = ITEMS.registerSpawnEgg("broken_dragonfly_spawn_egg", ClockworkEntities.BROKEN_DRAGONFLY, 0x3A2721, 0xC88A19, new Item.Properties());
+
 }

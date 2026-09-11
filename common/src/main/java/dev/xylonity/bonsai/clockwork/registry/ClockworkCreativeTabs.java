@@ -30,6 +30,8 @@ public class ClockworkCreativeTabs {
                                 output.accept(ClockworkItems.CLOCKWORK_POTION_SPRAYER.get());
                                 output.accept(ClockworkItems.CLOCKWORK_FLAMETHROWER.get());
                                 output.accept(ClockworkItems.CLOCKWORK_DRILL.get());
+                                output.accept(ClockworkItems.DRAGONFLY_SPAWN_EGG.get());
+                                output.accept(ClockworkItems.BROKEN_DRAGONFLY_SPAWN_EGG.get());
                             })
                             .build());
 

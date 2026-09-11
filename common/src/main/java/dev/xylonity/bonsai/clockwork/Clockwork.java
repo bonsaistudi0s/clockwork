@@ -23,8 +23,8 @@ public class Clockwork {
     public static final NetworkEndpoint NETWORK = Network.endpoint(MOD_ID);
 
     public static void init() {
-        ClockworkItems.ITEMS.init();
         ClockworkEntities.ENTITIES.init();
+        ClockworkItems.ITEMS.init();
         ClockworkSounds.SOUNDS.init();
         ClockworkCreativeTabs.CREATIVE_MODE_TABS.init();
         ClockworkParticles.PARTICLES.init();

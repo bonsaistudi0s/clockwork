@@ -31,7 +31,7 @@ side = "BOTH"
 [[dependencies.${mod_id}]]
 modId = "knightlib"
 mandatory = true
-versionRange = "[1.5.1,)"
+versionRange = "[2.0.0,)"
 ordering = "NONE"
 side = "BOTH"
 

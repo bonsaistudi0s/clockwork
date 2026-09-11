@@ -12,11 +12,11 @@ public class ClockworkPersistentSounds {
         KnightLibPersistentSounds.profile(DragonflyEntity.class)
                 .sound("clockwork:fly")
                     .event(ClockworkSounds.DRAGONFLY_FLY)
-                    .volume(0.3f)
+                    .volume(0.15f)
                     .build()
                 .sound("clockwork:idle")
                     .event(ClockworkSounds.DRAGONFLY_IDLE)
-                    .volume(0.3f)
+                    .volume(0.15f)
                     .build()
                 .submit();
 

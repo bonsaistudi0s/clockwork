@@ -16,6 +16,8 @@
   "item.clockwork.clockwork_flamethrower": "Flamethrower",
   "item.clockwork.clockwork_wings": "Clockwork Wings",
   "item.clockwork.clockwork_drill": "Clockwork Drill",
+  "item.clockwork.dragonfly_spawn_egg": "Dragonfly Spawn Egg",
+  "item.clockwork.broken_dragonfly_spawn_egg": "Broken Dragonfly Spawn Egg",
 
   "entity.clockwork.dragonfly": "Dragonfly",
   "entity.clockwork.broken_dragonfly": "Broken Dragonfly",

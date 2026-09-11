@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.UUID;
 
-public class ClockworkWingsBoostProjectile extends AbstractProjectile {
+public class ClockworkWingsBoostProjectile extends GenericProjectile {
 
     private static final EntityDataAccessor<Optional<UUID>> TARGET_ENTITY_UUID = SynchedEntityData.defineId(ClockworkWingsBoostProjectile.class, EntityDataSerializers.OPTIONAL_UUID);
 

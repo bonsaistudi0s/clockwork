@@ -31,10 +31,9 @@
         "fabric-api": "*",
         "minecraft": "${minecraft_version}",
         "java": ">=${java_version}",
-        "knightlib": ">=1.5.1"
+        "knightlib": ">=2.0.0"
     },
     "suggests": {
         "another-mod": "*"
     }
 }
-  
