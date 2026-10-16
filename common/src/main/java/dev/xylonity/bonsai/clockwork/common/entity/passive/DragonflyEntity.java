@@ -140,6 +140,11 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     }
 
     @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    @Override
     public void remove(RemovalReason reason) {
         if (level().isClientSide) {
             KnightLibPersistentSounds.stopAll(this);

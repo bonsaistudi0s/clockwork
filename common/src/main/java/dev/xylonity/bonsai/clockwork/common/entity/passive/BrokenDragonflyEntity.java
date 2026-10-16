@@ -120,6 +120,11 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
     }
 
     @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    @Override
     public void push(double x, double y, double z) {
         ;;
     }

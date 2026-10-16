@@ -1,3 +1,6 @@
+# 1.1.7
+- Dragonfly no longer drowns
+
 # 1.1.6
 - Added compat with knightlib 2.0.0
 - Added spawn eggs for the clockwork dragonfly and broken dragonfly
