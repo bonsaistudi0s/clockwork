@@ -74,6 +74,9 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
     private static final double ARROW_MAX_DISTANCE = 128.0;
     private static final float SEARCH_RADIUS = 3.5f;
 
+    // Marks the arrows shot by this crossbow so the ServerEntityMixin can sync their velocity properly
+    public static final String SCOPE_ARROW_TAG = "clockwork_scope_arrow";
+
     private boolean loadSoundPlayed = false;
 
     public ScopeCrossbow(Properties props) {
@@ -416,6 +419,7 @@ public class ScopeCrossbow extends GeckoCrossbowItem {
 
         final ArrowItem arrowItem = (ammo.getItem() instanceof ArrowItem arrowItem1) ? arrowItem1 : (ArrowItem) Items.ARROW;
         final AbstractArrow arrow = arrowItem.createArrow(level, ammo, shooter);
+        arrow.addTag(SCOPE_ARROW_TAG);
 
         if (shooter instanceof Player) {
             arrow.setCritArrow(true);

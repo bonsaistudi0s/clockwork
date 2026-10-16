@@ -10,6 +10,7 @@
     "PlayerMixin",
     "PotionItemMixin",
     "PotionUtilsMixin",
+    "ServerEntityMixin",
     "StructureTemplateAccessor",
     "StructureTemplateManagerMixin"
   ],

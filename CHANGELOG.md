@@ -1,5 +1,6 @@
 # 1.1.7
 - Dragonfly no longer drowns
+- Fixed arrows shot from the clockwork scope crossbow slanting off to the side
 
 # 1.1.6
 - Added compat with knightlib 2.0.0
