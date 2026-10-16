@@ -8,6 +8,7 @@
     "CrossbowItemMixin",
     "PlayerMixin",
     "PotionItemMixin",
+    "ServerEntityMixin",
     "StructureTemplateAccessor",
     "StructureTemplateManagerMixin"
   ],
