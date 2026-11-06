@@ -6,6 +6,7 @@ import dev.xylonity.bonsai.clockwork.registry.ClockworkEntities;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkItems;
 import dev.xylonity.bonsai.clockwork.registry.ClockworkSounds;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -63,12 +64,14 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
             if (random.nextFloat() <= 0.3f) {
                 DragonflyEntity entity = ClockworkEntities.DRAGONFLY.get().create(level());
                 if (entity != null) {
-                    entity.setPos(position());
+                    entity.moveTo(getX(), getY(), getZ(), yBodyRot, getXRot());
+                    entity.setYHeadRot(yBodyRot);
+                    entity.setYBodyRot(yBodyRot);
                     entity.setActivatingTicks(0);
                     level().addFreshEntity(entity);
                 }
 
-                level().playSound(null, blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1, 1);
+                level().playSound(null, blockPosition(), ClockworkSounds.DRILL_REPAIR.get(), SoundSource.BLOCKS, 1, 1);
                 generatePoofParticles();
                 this.discard();
             }
@@ -80,6 +83,16 @@ public class BrokenDragonflyEntity extends HostileClockworkEntity {
 
             return InteractionResult.SUCCESS;
 
+        }
+
+        // Hint
+        if (hand == InteractionHand.MAIN_HAND && !player.getOffhandItem().is(ClockworkItems.CLOCKWORK_GEAR.get())) {
+            if (!level().isClientSide) {
+                playSound(SoundEvents.NOTE_BLOCK_BASS.value(), 1, 1);
+                player.displayClientMessage(Component.translatable("message.clockwork.broken_dragonfly"), true);
+            }
+
+            return InteractionResult.CONSUME;
         }
 
         return super.mobInteract(player, hand);

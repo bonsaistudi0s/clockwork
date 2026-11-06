@@ -1,3 +1,8 @@
+# 1.1.7
+- Repairing a broken dragonfly now plays a mechanical repair sound instead of the experience level up sound
+- Interacting with a broken dragonfly without a clockwork gear now shows a hint above the hotbar
+- Fixed the dragonfly animation flickering right after repairing a broken dragonfly
+
 # 1.1.6
 - Dragonfly no longer drowns
 - Fixed arrows shot from the clockwork scope crossbow slanting off to the side

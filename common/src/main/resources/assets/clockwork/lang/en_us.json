@@ -24,5 +24,6 @@
   "entity.clockwork.clockwork_drill": "Clockwork Drill",
 
   "message.clockwork.broken_drill": "You need to use %1$d clockwork gear%2$s to repair the clockwork drill",
-  "message.clockwork.broken_drill_repaired": "Correctly repaired the clockwork drill!"
+  "message.clockwork.broken_drill_repaired": "Correctly repaired the clockwork drill!",
+  "message.clockwork.broken_dragonfly": "You need to spend clockwork gears to repair the broken dragonfly"
 }

@@ -47,7 +47,7 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     private final RawAnimation FLY = RawAnimation.begin().thenPlay("fly");
     private final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
     private final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
-    private final RawAnimation ACTIVATE = RawAnimation.begin().thenPlay("activate");
+    private final RawAnimation ACTIVATE = RawAnimation.begin().thenPlayAndHold("activate");
 
     // 0 walk, 1 flying, 2 idle (floor)
     public static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(DragonflyEntity.class, EntityDataSerializers.INT);
@@ -336,10 +336,14 @@ public class DragonflyEntity extends PassiveClockworkEntity implements PlayerRid
     }
 
     private <T extends GeoAnimatable> PlayState predicate(AnimationState<T> event) {
+        boolean activating = getActivatingTicks() >= 0 && getActivatingTicks() <= ANIMATION_ACTIVATE_TICKS;
+
+        event.getController().transitionLength(activating && !isDeadOrDying() ? 0 : 2);
+
         if (isDeadOrDying()) {
             event.setAnimation(DEATH);
         }
-        else if (getActivatingTicks() >= 0 && getActivatingTicks() <= ANIMATION_ACTIVATE_TICKS) {
+        else if (activating) {
             event.setAnimation(ACTIVATE);
         }
         else if (getState() == 1) {
